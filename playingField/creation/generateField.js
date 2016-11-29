@@ -8,13 +8,22 @@ var standard = "default";
 var question = "question";
 var jump = "jump";
 
-// This functions will generate the playing field and return it.
-function getNewField() {
-    //var fieldSize = getFieldSize();
-    var test = getFirstField();
-    return test;
+// Returns a specific playing field.
+function getNewField(playingFieldId) {
 
+    switch (playingFieldId){
+        case "1":
+            return getFirstField();
+        default:
+            return getRandomField();
+    }
+}
 
+// Returns a random playing field.
+function getRandomField() {
+
+    //TODO: add random picker if multiple fields are available.
+    return getFirstField();
 }
 
 // Returns the size of a playing field.
@@ -22,10 +31,18 @@ function getFieldSize() {
     return 128;
 }
 
+// Generates and returns the first playing field as an array.
 function getFirstField() {
 
-    var coordinates = [
-      [0,1,start], [1,1,standard], [2,1,standard], [3,1,standard], [4,1,standard], [5,1,question], [6,1,standard],
+    var coordinates = getFirstFieldCoordinates();
+
+    return generateFirstPlayingField(coordinates);
+}
+
+// Returns the coordinates for the first playing field.
+function getFirstFieldCoordinates() {
+    return [
+        [0,1,start], [1,1,standard], [2,1,standard], [3,1,standard], [4,1,standard], [5,1,question], [6,1,standard],
         [6,2,standard], [6,3,standard], [6,4,standard], [6,5,standard], [6,6,question], [6,7,standard], [6,8,standard],
         [6,9,standard], [6,10,standard], [6,11,question], [6,12,standard], [6,13,jump, 8,15], [6,14,standard], [6,15,question],
         [7,15,standard], [8,15,jump, 6,13], [9,15,question], [10,15,standard], [11,15,standard], [12,15,standard],
@@ -42,14 +59,21 @@ function getFirstField() {
         [31,3,standard], [32,3,standard], [33,3,question], [33,4,standard], [33,5,standard], [33,6,standard], [33,7,question],
         [33,8,standard], [34,8,standard], [35,8,end]
     ];
+}
 
-    // test
+// Generates the playing field and returns it.
+function generateFirstPlayingField(coordinates) {
+
     var field = [];
     coordinates.forEach(function (value, key) {
+
+        // Check for a jump field.
         if (value[2] == jump) {
             var id = -1;
             for (var i = 0; i < coordinates.length; i++) {
                 var val = coordinates[i];
+
+                // Set jump destination id.
                 if (val[0] == value[3] && val[1] == value[4]) {
                     id = i;
                     break;
@@ -66,7 +90,7 @@ function getFirstField() {
 
     return field;
 }
-
 module.exports = {
-    getNewField: getNewField
+    getNewField: getNewField,
+    getRandomField: getRandomField
 };
