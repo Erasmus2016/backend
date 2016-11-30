@@ -64,7 +64,7 @@ function drawFieldToString(field) {//TODO: create utils.js and move methods like
 }
 
 function generateField(maxX, maxY, approximateLength) {//TODO: split to more methods
-    var startX = 0, startY = Math.floor(Math.random() * maxY);
+    var startX = 0, startY = randomNumber.getRandomInteger(0, maxY);
     var requiredSizeAddition = approximateLength - maxX;
     if (requiredSizeAddition <= 0) {
         // generate line map (too short length required)
@@ -130,7 +130,7 @@ function generateField(maxX, maxY, approximateLength) {//TODO: split to more met
     }
 
     while (availableStraightTiles > 0) {
-        var targetSpace = Math.floor(Math.random() * straightTilesSizes.length);
+        var targetSpace = randomNumber.getRandomInteger(0, straightTilesSizes.length);
         availableStraightTiles--;
         straightTilesSizes[targetSpace]++;
     }
@@ -141,7 +141,7 @@ function generateField(maxX, maxY, approximateLength) {//TODO: split to more met
 
     if (exactPathLength) {
         while (requiredWavesSize > 0) {
-            var targetWavesBranch = Math.floor(Math.random() * wavesBranchesSizes.length);
+            var targetWavesBranch = randomNumber.getRandomInteger(0, wavesBranchesSizes.length);
             var wavePosition = startY;
             var addNextBranchToPosition = wavesBranchesSizes.length - 1 > targetWavesBranch && targetWavesBranch % 2 != 0;
             for (var i = 0, end = targetWavesBranch + (addNextBranchToPosition ? 1 : 0); i <= end; i++) {
@@ -231,7 +231,7 @@ function addJumpsToField(field, jumpCreationChance, maxJumpDistance) {
             continue;// skip some corners
         }
 
-        var jumpLen = Math.floor(Math.random() * (maxJumpDistance - 1) + 2);
+        var jumpLen = randomNumber.getRandomInteger(2, maxJumpDistance + 1);
 
         var leftChange = Math.floor(jumpLen / 2);
         var rightChange = jumpLen - leftChange;
@@ -277,16 +277,24 @@ function addJumpsToField(field, jumpCreationChance, maxJumpDistance) {
     }
 }
 
-function addQuestionsToField(field, minDiff, maxDiff) {
-    var diff = 0, targetDiff = Math.floor(Math.random() * (maxDiff - minDiff + 1)) + minDiff;
+function addQuestionsToField(field, differences) {
+    var nextTarget = function () {
+        return randomNumber.getRandomInteger(0, differences.length);
+    };
+    var diff = 0, target = nextTarget();
     for (var i = 0, len = field.length; i < len; i++) {
+        diff++;
+
         var point = field[i];
         if (point.type != standard) continue;
 
-        diff++;
-        if (diff == targetDiff) {
+        while (diff > differences[target] && target < differences.length) {
+            target++;
+        }
+
+        if (target >= differences.length || diff == differences[target]) {
             diff = 0;
-            targetDiff = Math.floor(Math.random() * (maxDiff - minDiff + 1)) + minDiff;
+            target = nextTarget();
 
             point.type = question;
         }
@@ -320,7 +328,7 @@ module.exports = {
     generateNewField: function () {//TODO: maybe add some arguments to this method
         var field = generateField(75, 40, 250);//TODO: better arguments
         addJumpsToField(field, 0.4, 4);//TODO: better arguments
-        addQuestionsToField(field, 2, 7);//TODO: better arguments
+        addQuestionsToField(field, [2, 4, 6, 7]);//TODO: better arguments
         return field;
     },
 
