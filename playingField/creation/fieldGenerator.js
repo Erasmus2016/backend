@@ -223,17 +223,7 @@ function generateField(maxX, maxY, approximateLength) {//TODO: split to more met
 }
 
 function addJumpsToField(field, jumpCreationChance, maxJumpDistance) {
-    var cornersIndexes = [];
-    for (var i = 1, len = field.length - 1; i < len; i++) {// detect corners
-        var actualPoint = field[i];
-        var previousPoint = field[i - 1];
-        var nextPoint = field[i + 1];
-
-        if (!((actualPoint.x == previousPoint.x && actualPoint.x == nextPoint.x)
-            || (actualPoint.y == previousPoint.y && actualPoint.y == nextPoint.y))) {
-            cornersIndexes.push(i);
-        }
-    }
+    var cornersIndexes = getCornerFieldsIndexes(field);
 
     for (var i = 0, len = cornersIndexes.length; i < len; i++) {
         var chance = Math.random();
@@ -249,27 +239,36 @@ function addJumpsToField(field, jumpCreationChance, maxJumpDistance) {
         var leftIndex = cornersIndexes[i] - leftChange;
         var rightIndex = cornersIndexes[i] + rightChange;
 
-        if (leftChange < 0 || rightChange >= len) {
+        if (leftIndex <= 0 || rightIndex >= field.length - 1) {// check for array bounds
             continue;// can't generate jump here
         }
 
         var leftPoint = field[leftIndex];
         var rightPoint = field[rightIndex];
 
-        if (leftPoint.type != standard || rightPoint.type != standard) {
+        if (leftPoint.type != standard || rightPoint.type != standard) {// check for existing jumps
             continue;// can't generate jump here
         }
 
         var problem = false;
-        for (var j = leftIndex + 1, max = rightIndex; j < max; j++) {
+        for (var j = leftIndex + 1, max = rightIndex; j < max; j++) {// check for jumps in range of jump
             if (field[j].type == jump) {
                 problem = true;
                 break;
             }
         }
-        if (problem) {
-            continue;// jump in jump is not allowed
+        if (problem) continue;// jump in range of jump is not allowed
+
+        var cornersNum = 0;
+        for (var j = leftIndex + 1, max = rightIndex; j < max; j++) {// check for jumps over more corners
+            if (isCornerField(field, j)) {
+                cornersNum++;
+            }
         }
+        if (cornersNum != 1) {
+            continue;// jump over more corners is not allowed
+        }
+
 
         leftPoint.type = jump;
         leftPoint.jumpDestinationId = rightPoint.id;
@@ -292,6 +291,27 @@ function addQuestionsToField(field, minDiff, maxDiff) {
             point.type = question;
         }
     }
+}
+
+function getCornerFieldsIndexes(field) {
+    var cornersIndexes = [];
+    for (var i = 1, len = field.length - 1; i < len; i++) {
+        if (isCornerField(field, i)) {
+            cornersIndexes.push(i);
+        }
+    }
+    return cornersIndexes;
+}
+
+function isCornerField(field, index) {
+    if (index <= 0 || index >= field.length - 1) return false;
+
+    var actualPoint = field[index];
+    var previousPoint = field[index - 1];
+    var nextPoint = field[index + 1];
+
+    return !((actualPoint.x == previousPoint.x && actualPoint.x == nextPoint.x)
+    || (actualPoint.y == previousPoint.y && actualPoint.y == nextPoint.y));
 }
 
 module.exports = {
