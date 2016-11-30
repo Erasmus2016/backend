@@ -221,12 +221,76 @@ function generateField(maxX, maxY, approximateLength) {//TODO: split to more met
     return field;
 }
 
-function addJumpsToField(field, maxJumpDistance) {
-    //TODO: create
+function addJumpsToField(field, jumpCreationChance, maxJumpDistance) {
+    var cornersIndexes = [];
+    for (var i = 1, len = field.length - 1; i < len; i++) {// detect corners
+        var actualPoint = field[i];
+        var previousPoint = field[i - 1];
+        var nextPoint = field[i + 1];
+
+        if (!((actualPoint.x == previousPoint.x && actualPoint.x == nextPoint.x)
+            || (actualPoint.y == previousPoint.y && actualPoint.y == nextPoint.y))) {
+            cornersIndexes.push(i);
+        }
+    }
+
+    for (var i = 0, len = cornersIndexes.length; i < len; i++) {
+        var chance = Math.random();
+        if (chance < jumpCreationChance) {
+            continue;// skip some corners
+        }
+
+        var jumpLen = Math.floor(Math.random() * (maxJumpDistance - 1) + 2);
+
+        var leftChange = Math.floor(jumpLen / 2);
+        var rightChange = jumpLen - leftChange;
+
+        var leftIndex = cornersIndexes[i] - leftChange;
+        var rightIndex = cornersIndexes[i] + rightChange;
+
+        if (leftChange < 0 || rightChange >= len) {
+            continue;// can't generate jump here
+        }
+
+        var leftPoint = field[leftIndex];
+        var rightPoint = field[rightIndex];
+
+        if (leftPoint.type != standard || rightPoint.type != standard) {
+            continue;// can't generate jump here
+        }
+
+        var problem = false;
+        for (var j = leftIndex + 1, max = rightIndex; j < max; j++) {
+            if (field[j].type == jump) {
+                problem = true;
+                break;
+            }
+        }
+        if (problem) {
+            continue;// jump in jump is not allowed
+        }
+
+        leftPoint.type = jump;
+        leftPoint.jumpDestinationId = rightPoint.id;
+        rightPoint.type = jump;
+        rightPoint.jumpDestinationId = leftPoint.id;
+    }
 }
 
-function addQuestionsToField(field, minDiff, maxDiff, maxQuestions) {
-    //TODO: create
+function addQuestionsToField(field, minDiff, maxDiff) {
+    var diff = 0, targetDiff = Math.floor(Math.random() * (maxDiff - minDiff + 1)) + minDiff;
+    for (var i = 0, len = field.length; i < len; i++) {
+        var point = field[i];
+        if (point.type != standard) continue;
+
+        diff++;
+        if (diff == targetDiff) {
+            diff = 0;
+            targetDiff = Math.floor(Math.random() * (maxDiff - minDiff + 1)) + minDiff;
+
+            point.type = question;
+        }
+    }
 }
 
 function getFirstField() {//TODO: remove
@@ -279,8 +343,8 @@ module.exports = {
     // This functions will generate the playing field and return it.
     generateNewField: function () {//TODO: maybe add some arguments to this method
         var field = generateField(75, 40, 250);//TODO: better arguments
-        addJumpsToField(field, 2);//TODO: better arguments
-        addQuestionsToField(field, 1, 5, 25);//TODO: better arguments
+        addJumpsToField(field, 0.4, 4);//TODO: better arguments
+        addQuestionsToField(field, 2, 7);//TODO: better arguments
         console.log(drawFieldToString(field));
         return field;
     }

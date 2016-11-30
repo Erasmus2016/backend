@@ -3,7 +3,7 @@ randomNumber = require('./functions/randomNumber');
 var diceResult = randomNumber.getRandomDiceValue();
 console.log(diceResult);
 
-var generateField = require('./playingField/creation/generateField');
+var generateField = require('./playingField/creation/fieldGenerator');
 var field = generateField.generateNewField();
 
 var test = require('./functions/validator/dataChecker.js');
