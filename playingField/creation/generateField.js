@@ -78,7 +78,7 @@ function generateField(maxX, maxY, approximateLength) {//TODO: split to more met
     var startWave = getRandomBoolean(), nextWave = startWave;// false == up wave, true == down wave
     var maxOneUpWaveAddition = startY;
     var maxOneDownWaveAddition = maxY - startY;
-    var maxWaves = (maxX - 2) / 2;
+    var maxWaves = (maxX - 3) / 2;
     var minWaves = 0;
 
     var tempLength = maxX;
@@ -112,6 +112,11 @@ function generateField(maxX, maxY, approximateLength) {//TODO: split to more met
     var availableStraightTiles = maxX - (wavesNum * 2);
     var straightTilesSizes = new Array((wavesNum * 2) + 1);
     straightTilesSizes.fill(0);
+
+    if (availableStraightTiles > 0) {// prefer to add 1 tile to start
+        availableStraightTiles--;
+        straightTilesSizes[0]++;
+    }
 
     if (availableStraightTiles > 0) {// prefer to add 1 tile to start
         availableStraightTiles--;
@@ -171,7 +176,7 @@ function generateField(maxX, maxY, approximateLength) {//TODO: split to more met
             var newBranchSize = wavesBranchesSizes[i] * way;
             while (true) {
                 var newSize = newBranchSize + way;
-                if (wavePosition + newBranchSize < 0 || wavePosition + newBranchSize >= maxY) break;
+                if (wavePosition + newSize < 0 || wavePosition + newSize >= maxY) break;
                 newBranchSize = newSize;
             }
             wavesBranchesSizes[i] = Math.abs(newBranchSize);
@@ -273,8 +278,8 @@ module.exports = {
 
     // This functions will generate the playing field and return it.
     generateNewField: function () {//TODO: maybe add some arguments to this method
-        var field = generateField(80, 20, 150);//TODO: better arguments
-        addJumpsToField(field, 4);//TODO: better arguments
+        var field = generateField(75, 40, 250);//TODO: better arguments
+        addJumpsToField(field, 2);//TODO: better arguments
         addQuestionsToField(field, 1, 5, 25);//TODO: better arguments
         console.log(drawFieldToString(field));
         return field;
