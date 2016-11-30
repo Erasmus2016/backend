@@ -4,7 +4,7 @@
 
 var regex = /A-Za-z0-9ÖÄÜäöüß/g;
 
-function CheckData(data) {
+function checkData(data) {
 
     var checkedColor = checkColor(data.Color);
     var checkedLanguage = checkLanguage(data.Language);
@@ -18,7 +18,7 @@ function CheckData(data) {
 // Returns the checked color value.
 function checkColor(color) {
 
-    if(isStringHarmless(color)) {
+    if(!isStringHarmless(color)) {
         throw "Color value is potential dangerous.";
     }
 
@@ -39,7 +39,7 @@ function checkColor(color) {
 // Returns the checked language value.
 function checkLanguage(language) {
 
-    if(isStringHarmless(language)) {
+    if(!isStringHarmless(language)) {
         throw "Language value is potential dangerous.";
     }
 
@@ -55,22 +55,10 @@ function checkLanguage(language) {
     }
 }
 
-// Checks if an input string is harmles.
-// Returns true if string is harmless - otherwise false.
-function isStringHarmless (input) {
-    input.forEach(function (value, key) {
-        if (regex.test(value)){
-            return true;
-        }
-    });
-
-    return false;
-}
-
 // Returns true, if the color is valid - otherwise false.
 function isColorValid(color) {
 
-    if(isStringHarmless(color)) {
+    if(!isStringHarmless(color)) {
         throw "Color value is potential dangerous.";
     }
 
@@ -88,7 +76,7 @@ function isColorValid(color) {
 // Returns true, if the language is valid - otherwise false.
 function isLanguageValid(language) {
 
-    if(isStringHarmless(language)) {
+    if(!isStringHarmless(language)) {
         throw "Language value is potential dangerous.";
     }
 
@@ -101,3 +89,22 @@ function isLanguageValid(language) {
             return false;
     }
 }
+
+// Checks if an input string is harmless.
+// Returns true if string is harmless - otherwise false.
+function isStringHarmless (input) {
+
+    for (var i = 0; i < input.length; i++) {
+        if (regex.test(input[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+module.exports = {
+    isLanguageValid: isLanguageValid,
+    isColorValid: isColorValid,
+    checkData: checkData
+};
