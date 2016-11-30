@@ -9,16 +9,19 @@ var question = "question";
 var jump = "jump";
 
 function drawFieldToString(field) {//TODO: create utils.js and move methods like this there
-    var maxX = 0, maxY = 0;
+    if (field.length == 0) return "fieldLen=0, minX=NaN, maxX=NaN, minY=NaN, maxY=NaN";
+    var minX = field[0].x, maxX = field[0].x, minY = field[0].y, maxY = field[0].y;
     field.forEach(function (val) {
+        minX = Math.min(minX, val.x);
+        minY = Math.min(minY, val.y);
         maxX = Math.max(maxX, val.x);
         maxY = Math.max(maxY, val.y);
     });
 
     var fieldMap = [];
-    for (var x = 0; x < maxX + 1; x++) {
+    for (var x = minX; x < maxX + 1; x++) {
         var line = [];
-        for (var y = 0; y < maxY + 1; y++) {
+        for (var y = minY; y < maxY + 1; y++) {
             line.push('  ');
         }
         fieldMap.push(line);
@@ -45,10 +48,10 @@ function drawFieldToString(field) {//TODO: create utils.js and move methods like
                 typeMark = 'X ';// unknown tile
                 break;
         }
-        fieldMap[val.x][val.y] = typeMark;
+        fieldMap[val.x - minX][val.y - minY] = typeMark;
     });
 
-    var result = "fieldLen=" + field.length + ", maxX=" + maxX + ", maxY=" + maxY;
+    var result = "fieldLen=" + field.length + ", minX=" + minX + ", maxX=" + maxX + ", minY=" + minY + ", maxY=" + maxY;
     for (var mapY = 0; mapY < fieldMap[0].length; mapY++) {
         result += "\n";
         for (var mapX = 0; mapX < fieldMap.length; mapX++) {
