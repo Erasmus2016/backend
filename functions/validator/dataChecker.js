@@ -4,6 +4,7 @@
 
 var regex = /A-Za-z0-9ÖÄÜäöüß/g;
 
+// Gets and checks an input data objects and returns a checked version.
 function checkData(data) {
 
     var checkedColor = checkColor(data.Color);
