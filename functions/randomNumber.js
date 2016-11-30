@@ -14,5 +14,9 @@ module.exports = {
         return (randomNumber == max)
             ? max--
             : randomNumber;
+    },
+
+    getRandomBoolean: function () {
+        return Math.random() >= 0.5;
     }
 };

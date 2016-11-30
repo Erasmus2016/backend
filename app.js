@@ -1,10 +1,11 @@
 console.log('super');
-randomNumber = require('./functions/randomNumber');
+var randomNumber = require('./functions/randomNumber');
 var diceResult = randomNumber.getRandomDiceValue();
 console.log(diceResult);
 
 var generateField = require('./playingField/creation/fieldGenerator');
 var field = generateField.generateNewField();
+console.log(generateField.fieldToString(field));
 
 var test = require('./functions/validator/dataChecker.js');
 var test2 = test.isColorValid("green");
