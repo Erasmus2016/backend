@@ -53,6 +53,8 @@ this.getDifficulty = function (difficulty) {
             return 2;
         case "hard":
             return 3;
+        default:
+            throw 'unable to get difficultyId';
     }
 };
 
@@ -60,8 +62,7 @@ this.getDifficulty = function (difficulty) {
 this.getLanguage = function (language) {
 
     // Query database and return a random question.
-    var table = 'language';
-    var sql = 'SELECT id FROM ' + table +
+    var sql = 'SELECT id FROM language' +
         'WHERE language = ?';
 
     this.connection.query(sql, language, function (error, result) {
