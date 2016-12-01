@@ -2,7 +2,7 @@
  * Created by Manuel on 01.12.2016.
  */
 
-this.mysql      = require('mysql');
+this.mysql = require('mysql');
 this.connection = null;
 this.usedQuestions = [];
 
@@ -19,14 +19,14 @@ this.getQuestionWithAnswers = function (category, difficulty, language) {
             if (isNewQuestion) {
                 var translatedQuestion = getQuestionTranslation(question.Id, languageId);
                 var translatedAnswers = getAnswersTranslation(question.Id, languageId);
-                return {translatedQuestion, translatedAnswers};
+                return [question, translatedQuestion, translatedAnswers];
             }
         }
     }
     finally {
         this.connection.end();
     }
-}
+};
 
 // Initializes database and establishes connection to database.
 this.initDb = function () {
@@ -42,7 +42,7 @@ this.initDb = function () {
 
         console.log('Database connection established.');
     });
-}
+};
 
 // Returns the question difficulty as an integer.
 this.getDifficulty = function (difficulty) {
@@ -54,7 +54,7 @@ this.getDifficulty = function (difficulty) {
         case "hard":
             return 3;
     }
-}
+};
 
 // Returns the language for both question and answer.
 this.getLanguage = function (language) {
@@ -73,7 +73,7 @@ this.getLanguage = function (language) {
             throw error;
         }
     });
-}
+};
 
 // Returns a random question object based on input category and difficulty level.
 this.getQuestion = function (category, difficulty) {
@@ -95,20 +95,25 @@ this.getQuestion = function (category, difficulty) {
             throw error;
         }
     });
-}
+};
 
 // Checks and returns true, if the question wasn't already used within this game - otherwise false.
 this.isNewQuestion = function (questionId) {
-    return this.usedQuestions.contains(questionId)
-        ? false
-        : true;
-}
+    if (!this.usedQuestions.contains(questionId)) {
+        this.saveQuestionIdToRam(questionId);
+        return true;
+    }
+    else {
+        return false;
+    }
+};
 
 // Adds a questionId to the already used questions array.
 this.saveQuestionIdToRam = function (questionId) {
     this.usedQuestions.push(questionId);
-}
+};
 
+// Returns the translated question for this question.
 this.getQuestionTranslation = function (questionId, languageId) {
 
     // Query database and return the translated question.
@@ -125,14 +130,9 @@ this.getQuestionTranslation = function (questionId, languageId) {
             throw error;
         }
     });
+};
 
-    // var post  = {id: 1, title: 'Hello MySQL'};
-    // var query = connection.query('INSERT INTO posts SET ?', post,    function(err, result) {
-    //     // Neat!
-    // });
-    // console.log(query.sql);
-}
-
+// Returns the translated answers for this question as an array.
 this.getAnswersTranslation = function (questionId, languageId) {
 
     // Query database and return the translated answers.
@@ -149,40 +149,7 @@ this.getAnswersTranslation = function (questionId, languageId) {
             throw error;
         }
     });
-
-    // var post  = {id: 1, title: 'Hello MySQL'};
-    // var query = connection.query('INSERT INTO posts SET ?', post,    function(err, result) {
-    //     // Neat!
-    // });
-    // console.log(query.sql);
-}
-this.dbQuery = function (difficulty, language) {
-
-    try {
-        // Query database.
-        var table = 'tableName';
-        var sql = 'SELECT * FROM ' + table + 'WHERE difficulty = ?';
-
-        connection.query(sql, difficulty, function (error, rows) {
-            if(!error) {
-                console.log('Rows: ', rows);
-                return rows;
-            }
-            else {
-                throw error;
-            }
-        });
-
-        // var post  = {id: 1, title: 'Hello MySQL'};
-        // var query = connection.query('INSERT INTO posts SET ?', post,    function(err, result) {
-        //     // Neat!
-        // });
-        // console.log(query.sql);
-    }
-    finally {
-        connection.end();
-    }
-}
+};
 
 // Set up and return database connection.
 this.getDbConnection = function () {
@@ -192,4 +159,4 @@ this.getDbConnection = function () {
         password : '< MySQL password >',
         database : '<your database name>'
     });
-}
+};
