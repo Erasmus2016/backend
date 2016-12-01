@@ -19,14 +19,14 @@ this.getQuestionWithAnswers = function (category, difficulty, language) {
             if (isNewQuestion) {
                 var translatedQuestion = getQuestionTranslation(question.Id, languageId);
                 var translatedAnswers = getAnswersTranslation(question.Id, languageId);
-                return {translatedQuestion, translatedAnswers};
+                return [translatedQuestion, translatedAnswers];
             }
         }
     }
     finally {
         this.connection.end();
     }
-}
+};
 
 // Initializes database and establishes connection to database.
 this.initDb = function () {
@@ -42,7 +42,7 @@ this.initDb = function () {
 
         console.log('Database connection established.');
     });
-}
+};
 
 // Returns the question difficulty as an integer.
 this.getDifficulty = function (difficulty) {
@@ -54,7 +54,7 @@ this.getDifficulty = function (difficulty) {
         case "hard":
             return 3;
     }
-}
+};
 
 // Returns the language for both question and answer.
 this.getLanguage = function (language) {
@@ -73,7 +73,7 @@ this.getLanguage = function (language) {
             throw error;
         }
     });
-}
+};
 
 // Returns a random question object based on input category and difficulty level.
 this.getQuestion = function (category, difficulty) {
@@ -95,19 +95,17 @@ this.getQuestion = function (category, difficulty) {
             throw error;
         }
     });
-}
+};
 
 // Checks and returns true, if the question wasn't already used within this game - otherwise false.
 this.isNewQuestion = function (questionId) {
-    return this.usedQuestions.contains(questionId)
-        ? false
-        : true;
-}
+    return !this.usedQuestions.contains(questionId);
+};
 
 // Adds a questionId to the already used questions array.
 this.saveQuestionIdToRam = function (questionId) {
     this.usedQuestions.push(questionId);
-}
+};
 
 this.getQuestionTranslation = function (questionId, languageId) {
 
@@ -126,12 +124,7 @@ this.getQuestionTranslation = function (questionId, languageId) {
         }
     });
 
-    // var post  = {id: 1, title: 'Hello MySQL'};
-    // var query = connection.query('INSERT INTO posts SET ?', post,    function(err, result) {
-    //     // Neat!
-    // });
-    // console.log(query.sql);
-}
+};
 
 this.getAnswersTranslation = function (questionId, languageId) {
 
@@ -150,12 +143,7 @@ this.getAnswersTranslation = function (questionId, languageId) {
         }
     });
 
-    // var post  = {id: 1, title: 'Hello MySQL'};
-    // var query = connection.query('INSERT INTO posts SET ?', post,    function(err, result) {
-    //     // Neat!
-    // });
-    // console.log(query.sql);
-}
+};
 this.dbQuery = function (difficulty, language) {
 
     try {
@@ -173,16 +161,11 @@ this.dbQuery = function (difficulty, language) {
             }
         });
 
-        // var post  = {id: 1, title: 'Hello MySQL'};
-        // var query = connection.query('INSERT INTO posts SET ?', post,    function(err, result) {
-        //     // Neat!
-        // });
-        // console.log(query.sql);
     }
     finally {
         connection.end();
     }
-}
+};
 
 // Set up and return database connection.
 this.getDbConnection = function () {
@@ -192,4 +175,4 @@ this.getDbConnection = function () {
         password : '< MySQL password >',
         database : '<your database name>'
     });
-}
+};

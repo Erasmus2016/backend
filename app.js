@@ -1,15 +1,24 @@
-console.log('super');
-var randomNumber = require('./functions/randomNumber');
-var diceResult = randomNumber.getRandomDiceValue();
-console.log(diceResult);
+global.APPLICATION_PATH = __dirname;
+global.ROOM_COUNT = 0;
+global.VALIDATOR = require('./functions/Validator/DataChecker');
+global.RANDOM_NUMBER = require('./functions/randomNumber');
 
-var generateField = require('./playingField/creation/fieldGenerator');
-var field = generateField.generateNewField();
-console.log(generateField.fieldToString(field));
+var Controller = require('./class/controller');
 
-var test = require('./functions/validator/dataChecker.js');
-var test2 = test.isColorValid("green");
-var test3 = test.isLanguageValid("en");
+const app = require('express')();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
-console.log(test2);
-console.log(test3);
+server.listen(5000);
+
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+});
+
+var clients = [];
+var instances = [];
+io.on('connection', function (socket) {
+    clients.push(socket);
+    if (clients.length > 1)
+        instances.push(new Controller(io, [clients.shift(), clients.shift()]));
+});
