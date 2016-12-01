@@ -35,12 +35,15 @@ module.exports = function (io, sockets) {
     };
 
     this.on('login', function (data, player) {
-        if (VALIDATOR.isColorValid(data.color) || VALIDATOR.isLanguageValid(data.lang)) {
-            throw "Invalid data (color or language) from client.";
+        if (VALIDATOR.isColorValid(data.color) ||
+            VALIDATOR.isLanguageValid(data.lang) ||
+            VALIDATOR.isCatgoryValid(data.category)) {
+            throw "Invalid data (color, category or language) from client.";
         }
 
         player.lang = data.lang;
         player.name = data.name;
+        game.setCategory(data.category);
 
         // Check if player color is still available.
         if (_this.game.IsColorAvailable(color)) {
@@ -98,12 +101,14 @@ module.exports = function (io, sockets) {
             var questionObject = _this.getQuestion();
             var correctAnswer = questionObject[0].correctAnswer;
 
+            // Send question and answers to client.
             _this.players.current().emit('question', {
                 question: questionObject[1],
                 answers: questionObject[2],
                 questionImage: questionObject[0].img
             });
 
+            // Get and process question answer from client.
             _this.players.current().once('answer', function (answerId) {
 
                 // Check for correct answer.

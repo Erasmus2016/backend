@@ -91,6 +91,12 @@ function isLanguageValid(language) {
     }
 }
 
+function isCategoryValid(category) {
+    if (!isStringHarmless(category)) {
+        throw "Category value is potential dangerous.";
+    }
+}
+
 // Checks if an input string is harmless.
 // Returns true if string is harmless - otherwise false.
 function isStringHarmless (input) {
