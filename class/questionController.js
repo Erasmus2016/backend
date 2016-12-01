@@ -2,10 +2,16 @@
  * Created by Manuel on 01.12.2016.
  */
 
-this.mysql      = require('mysql');
+this.mysql = require('mysql');
 this.connection = null;
 this.usedQuestions = [];
 
+// Gets the question with the appropriate answers from database and returns it.
+// Receives the category name, the difficulty name and the language name.
+// Returns an array with 3 elements:
+// 0. The question object
+// 1. The translated question as a string.
+// 2. The translated answers as a string array.
 this.getQuestionWithAnswers = function (category, difficulty, language) {
     try {
         this.initDb();
@@ -19,7 +25,7 @@ this.getQuestionWithAnswers = function (category, difficulty, language) {
             if (isNewQuestion) {
                 var translatedQuestion = getQuestionTranslation(question.Id, languageId);
                 var translatedAnswers = getAnswersTranslation(question.Id, languageId);
-                return [translatedQuestion, translatedAnswers];
+                return [question, translatedQuestion, translatedAnswers];
             }
         }
     }
@@ -53,15 +59,16 @@ this.getDifficulty = function (difficulty) {
             return 2;
         case "hard":
             return 3;
+        default:
+            throw 'unable to get difficultyId';
     }
 };
 
-// Returns the language for both question and answer.
+// Returns the language id for both question and answer.
 this.getLanguage = function (language) {
 
     // Query database and return a random question.
-    var table = 'language';
-    var sql = 'SELECT id FROM ' + table +
+    var sql = 'SELECT id FROM language' +
         'WHERE language = ?';
 
     this.connection.query(sql, language, function (error, result) {
@@ -99,7 +106,13 @@ this.getQuestion = function (category, difficulty) {
 
 // Checks and returns true, if the question wasn't already used within this game - otherwise false.
 this.isNewQuestion = function (questionId) {
-    return !this.usedQuestions.contains(questionId);
+    if (!this.usedQuestions.contains(questionId)) {
+        this.saveQuestionIdToRam(questionId);
+        return true;
+    }
+    else {
+        return false;
+    }
 };
 
 // Adds a questionId to the already used questions array.
@@ -107,6 +120,7 @@ this.saveQuestionIdToRam = function (questionId) {
     this.usedQuestions.push(questionId);
 };
 
+// Returns the translated question for this question.
 this.getQuestionTranslation = function (questionId, languageId) {
 
     // Query database and return the translated question.
@@ -123,9 +137,9 @@ this.getQuestionTranslation = function (questionId, languageId) {
             throw error;
         }
     });
-
 };
 
+// Returns the translated answers for this question as an array.
 this.getAnswersTranslation = function (questionId, languageId) {
 
     // Query database and return the translated answers.
@@ -142,29 +156,6 @@ this.getAnswersTranslation = function (questionId, languageId) {
             throw error;
         }
     });
-
-};
-this.dbQuery = function (difficulty, language) {
-
-    try {
-        // Query database.
-        var table = 'tableName';
-        var sql = 'SELECT * FROM ' + table + 'WHERE difficulty = ?';
-
-        connection.query(sql, difficulty, function (error, rows) {
-            if(!error) {
-                console.log('Rows: ', rows);
-                return rows;
-            }
-            else {
-                throw error;
-            }
-        });
-
-    }
-    finally {
-        connection.end();
-    }
 };
 
 // Set up and return database connection.
