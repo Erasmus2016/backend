@@ -1,6 +1,6 @@
 global.APPLICATION_PATH = __dirname;
 global.ROOM_COUNT = 0;
-global.VALIDATOR = require('./functions/Validator/DataChecker');
+global.VALIDATOR = require('./functions/validator/dataChecker');
 global.RANDOM_NUMBER = require('./functions/randomNumber');
 
 var Controller = require('./class/controller');
