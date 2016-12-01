@@ -9,7 +9,7 @@ module.exports = function (io, sockets) {
     var _this = this;
     this.game = new Game();
     this.players = [];
-    this.question = new Question();
+    //this.question = new Question();
     this.players.next = function () {
         if (this.current + 1 == this.length)
             return this[0];
