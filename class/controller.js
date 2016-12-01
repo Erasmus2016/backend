@@ -36,7 +36,7 @@ module.exports = function (io, sockets) {
 
     this.on('login', function (data, player) {
         if (VALIDATOR.isColorValid(data.color) || VALIDATOR.isLanguageValid(data.lang))
-            throw "";
+            throw "Invalid data (color or language) from client.";
 
         player.color = data.color;
         player.lang = data.lang;
@@ -71,6 +71,10 @@ module.exports = function (io, sockets) {
     };
 
     this.handleQuestion = function (resolve, reject) {
+
+        // TODO: TEST
+        resolve();
+        return;
 
         var difficulty;
 
