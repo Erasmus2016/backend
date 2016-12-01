@@ -50,6 +50,7 @@ module.exports = function (io, sockets) {
             if (!player.isReady)
                 return false;
         });
+        this.room.emit('map', this.field.getField());
         this.gameRound();
     };
 
@@ -151,6 +152,11 @@ module.exports = function (io, sockets) {
         });
 
         promise.then(function () {
+            var positions = [];
+            players.forEach(function (player) {
+                positions[player.getId()] = player.getPosition();
+            });
+            _this.room.emit('player-position', positions);
             _this.players.next();
             _this.gameRound();
         }).error(function () {
