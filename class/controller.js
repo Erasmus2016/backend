@@ -37,13 +37,13 @@ module.exports = function (io, sockets) {
     this.on('login', function (data, player) {
         if (VALIDATOR.isColorValid(data.color) ||
             VALIDATOR.isLanguageValid(data.lang) ||
-            VALIDATOR.isCatgoryValid(data.category)) {
+            VALIDATOR.isCategoryValid(data.category)) {
             throw "Invalid data (color, category or language) from client.";
         }
 
         player.lang = data.lang;
         player.name = data.name;
-        game.setCategory(data.category);
+        _this.game.setCategory(data.category);
 
         // Check if player color is still available.
         if (_this.game.IsColorAvailable(color)) {

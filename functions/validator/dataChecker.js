@@ -95,6 +95,7 @@ function isCategoryValid(category) {
     if (!isStringHarmless(category)) {
         throw "Category value is potential dangerous.";
     }
+    return true;
 }
 
 // Checks if an input string is harmless.
