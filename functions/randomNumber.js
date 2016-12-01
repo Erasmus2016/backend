@@ -7,7 +7,9 @@ function getRandomBoolean() {
 }
 
 function getRandomNumber(min, max) {
-    if (min > max) throw new Exception("Can't calculate random: min > max");
+    if (min > max) {
+        throw "Can't calculate random: min > max";
+    }
     return Math.random() * (max - min) + min;
 }
 
