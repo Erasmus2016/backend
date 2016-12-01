@@ -1,9 +1,15 @@
+//TODO: set category on game class on game init.
+
+
 var Game = require(APPLICATION_PATH + '/class/game');
 var Player = require(APPLICATION_PATH + '/class/player');
+var Question = require(APPLICATION_PATH + '/class/question');
+
 module.exports = function (io, sockets) {
     var _this = this;
     this.game = new Game();
     this.players = [];
+    this.question = new Question();
     this.players.next = function () {
         if (this.current + 1 == this.length)
             return this[0];
@@ -64,22 +70,50 @@ module.exports = function (io, sockets) {
     };
 
     this.handleQuestion = function (resolve, reject) {
-        //todo get question
-        var weight = 5;
-        this.players.current().emit('question', {});
-        this.players.current().once('answer', function (data) {
-            //check answer
-            if (true) {
-                _this.players.current().addPosition(weight);
-            } else {
-                _this.players.current().subPosition(weight);
+
+        var difficulty;
+
+        //TODO: Check: get difficulty from frontend
+        this.players.curent().once('set-difficulty', function (data) {
+
+            if (data.isNumber && data == 1 | 3 | 5) {
+                difficulty = data;
             }
-            resolve();
+            
+            // Get question and answers from database.
+            var questionObject = _this.getQuestion();
+            var correctAnswer = questionObject[0].correctAnswer;
+
+            _this.players.current().emit('question', {
+                question: questionObject[1],
+                answers: questionObject[2],
+                questionImage: questionObject[0].img
+            });
+
+            _this.players.current().once('answer', function (answerId) {
+
+                // Check for correct answer.
+                if (answerId === correctAnswer) {
+                    _this.players.current().addPosition(difficulty);
+                } else {
+                    _this.players.current().subPosition(difficulty);
+                }
+                resolve();
+            });
         });
+
         setTimeout(function () {
-            _this.players.current().subPosition(weight);
+            _this.players.current().subPosition(difficulty);
             resolve();
-        }, 20000);
+        }, 20000);  // 20 seconds.
+    };
+
+    // Gets a random question with the appropriate answers.
+    this.getQuestion = function (difficulty) {
+        var category = _this.game.getCategory();
+        var language = _this.players.current().lang;
+
+        return _this.question.getQuestionWithAnswers(category, difficulty, language);
     };
 
     this.process = function (dice) {

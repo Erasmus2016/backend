@@ -22,3 +22,12 @@ io.on('connection', function (socket) {
     if (clients.length > 1)
         instances.push(new Controller(io, [clients.shift(), clients.shift()]));
 });
+
+var category = "Beer";
+var difficulty = "hard";
+var language = "en";
+
+var Question = require('./class/question');
+
+this.question = new Question();
+var result = this.question.getQuestionWithAnswers(category, difficulty, language);
