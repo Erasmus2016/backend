@@ -3,7 +3,7 @@
 
 var Game = require(APPLICATION_PATH + '/class/game');
 var Player = require(APPLICATION_PATH + '/class/player');
-var Question = require(APPLICATION_PATH + '/class/question');
+//var Question = require(APPLICATION_PATH + '/class/question');
 
 module.exports = function (io, sockets) {
     var _this = this;
