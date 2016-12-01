@@ -35,14 +35,20 @@ module.exports = function (io, sockets) {
     };
 
     this.on('login', function (data, player) {
-        if (VALIDATOR.isColorValid(data.color) || VALIDATOR.isLanguageValid(data.lang))
+        if (VALIDATOR.isColorValid(data.color) || VALIDATOR.isLanguageValid(data.lang)) {
             throw "Invalid data (color or language) from client.";
+        }
 
-        player.color = data.color;
         player.lang = data.lang;
         player.name = data.name;
-        player.isReady = true;
-        this.checkReady();
+
+        // Check if player color is still available.
+        if (_this.game.IsColorAvailable(color)) {
+            player.color = data.color;
+            this.room.emit('available-colors', this.game.availableColors);
+            player.isReady = true;
+            this.checkReady();
+        }
     });
 
     this.checkReady = function () {
