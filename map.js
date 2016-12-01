@@ -247,4 +247,4 @@ var map = [ { id: 0, x: 0, y: 6, type: 'default' },
      { id: 246, x: 71, y: 15, type: 'question' },
      { id: 247, x: 72, y: 15, type: 'default' },
      { id: 248, x: 73, y: 15, type: 'default' },
-     { id: 249, x: 74, y: 15, type: 'question' } ]
+     { id: 249, x: 74, y: 15, type: 'question' } ];
