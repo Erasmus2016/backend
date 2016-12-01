@@ -76,10 +76,10 @@ module.exports = function (io, sockets) {
         //TODO: Check: get difficulty from frontend
         this.players.curent().once('set-difficulty', function (data) {
 
-            if (data.isNumber && data == 1 | 3 | 5) {
+            if (data.isNumber && data == 1 || data == 3 || data == 5) {
                 difficulty = data;
             }
-            
+
             // Get question and answers from database.
             var questionObject = _this.getQuestion();
             var correctAnswer = questionObject[0].correctAnswer;
