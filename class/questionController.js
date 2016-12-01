@@ -6,6 +6,12 @@ this.mysql = require('mysql');
 this.connection = null;
 this.usedQuestions = [];
 
+// Gets the question with the appropriate answers from database and returns it.
+// Receives the category name, the difficulty name and the language name.
+// Returns an array with 3 elements:
+// 0. The question object
+// 1. The translated question as a string.
+// 2. The translated answers as a string array.
 this.getQuestionWithAnswers = function (category, difficulty, language) {
     try {
         this.initDb();
@@ -58,7 +64,7 @@ this.getDifficulty = function (difficulty) {
     }
 };
 
-// Returns the language for both question and answer.
+// Returns the language id for both question and answer.
 this.getLanguage = function (language) {
 
     // Query database and return a random question.
