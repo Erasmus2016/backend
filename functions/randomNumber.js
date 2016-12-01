@@ -21,7 +21,7 @@ module.exports = {
 
     // Returns a pseudo random number between 1 and including 6.
     getRandomDiceValue: function () {
-        return getRandomNumber(1, 7);
+        return getRandomInteger(1, 7);
     },
 
     getRandomBoolean: getRandomBoolean,
