@@ -79,6 +79,9 @@ module.exports = function (io, sockets) {
             if (data.isNumber && data == 1 || data == 3 || data == 5) {
                 difficulty = data;
             }
+            else {
+                throw 'Invalid difficulty value from client.';
+            }
 
             // Get question and answers from database.
             var questionObject = _this.getQuestion();
@@ -93,7 +96,7 @@ module.exports = function (io, sockets) {
             _this.players.current().once('answer', function (answerId) {
 
                 // Check for correct answer.
-                if (answerId === correctAnswer) {
+                if (answerId.isNumber && answerId === correctAnswer) {
                     _this.players.current().addPosition(difficulty);
                 } else {
                     _this.players.current().subPosition(difficulty);
@@ -102,6 +105,7 @@ module.exports = function (io, sockets) {
             });
         });
 
+        // No answer is a wrong answer.
         setTimeout(function () {
             _this.players.current().subPosition(difficulty);
             resolve();
