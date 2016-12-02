@@ -19,8 +19,10 @@ module.exports = function (io, sockets) {
         return this[this.current];
     };
     this.players.forEach = function (callback) {
-        for (var i = 0; i < this.length; i++)
+        for (var i = 0; i < this.length; i++) {
+            console.log(i);
             callback(this[i], i, this);
+        }
     };
     this.players.current = 0;
     this.room_name = 'ROOM_' + (++ROOM_COUNT);
@@ -34,7 +36,7 @@ module.exports = function (io, sockets) {
     console.log('new room (' + this.room_name + ')');
 
     this.room.emit('login');
-    console.log(this.players);
+
     this.on = function (event, callback) {
         console.log('on');
         this.players.forEach(function (player) {
