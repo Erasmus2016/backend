@@ -19,10 +19,9 @@ module.exports = function (io, sockets) {
         return this[this.current];
     };
     this.players.forEach = function (callback) {
-        for (var i = 0; i < this.length; i++) {
-            console.log(i);
+        for (var i = 0; i < this.length; i++)
             callback(this[i], i, this);
-        }
+
     };
     this.players.current = 0;
     this.room_name = 'ROOM_' + (++ROOM_COUNT);
