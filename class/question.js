@@ -27,7 +27,7 @@ module.exports = function () {
 
                 if (isNewQuestion) {
                     var translatedQuestion = this.getQuestionTranslation(question.short_code, languageId);
-                    var translatedAnswers = this.getAnswersTranslation(question.Id, languageId);
+                    var translatedAnswers = this.getAnswersTranslation(question.short_code, languageId);
 
                     return [question, translatedQuestion, translatedAnswers];
                 }
