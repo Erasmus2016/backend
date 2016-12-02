@@ -146,11 +146,13 @@ module.exports = function (io, sockets) {
     this.process = function (dice) {
         var pos = this.players.current().addPosition(dice);
 
+        // Check if player has finished the game.
         if (this.game.getField().length > pos - 1) {
             this.gameOver();
             return;
+            // Check if player is behind the start field.
         } else if (pos < 0) {
-            //move to start
+            // Move to start.
             this.players.current().setPosition(0);
         }
 

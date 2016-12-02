@@ -2,8 +2,8 @@
  * Created by Manuel on 28.11.2016.
  */
 
-function getRandomBoolean() {
-    return Math.random() >= 0.5;
+function getRandomBoolean(chanceForTrue) {
+    return Math.random() < (typeof chanceForTrue !== "undefined" ? chanceForTrue : 0.5);
 }
 
 function getRandomNumber(min, max) {
