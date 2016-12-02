@@ -2,7 +2,7 @@
  * Created by Manuel on 29.11.2016.
  */
 
-var regex = /A-Za-z0-9ÖÄÜäöüß/g;
+var regex = /[A-Za-z0-9ÖÄÜäöüß]/g;
 
 // Gets and checks an input data objects and returns a checked version.
 function checkData(data) {
