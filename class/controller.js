@@ -27,7 +27,7 @@ module.exports = function (io, sockets) {
         socket.join(_this.room_name);
     });
 
-    console.log('new room (' + 'ROOM_' + (++ROOM_COUNT) + ')');
+    console.log('new room (' + this.room_name + ')');
 
     this.room.emit('login');
 
