@@ -30,7 +30,7 @@ module.exports = function (io, sockets) {
     console.log('new room (' + this.room_name + ')');
 
     this.room.emit('login');
-
+    console.log(this.players);
     this.on = function (event, callback) {
         console.log('on');
         this.players.forEach(function (player) {
