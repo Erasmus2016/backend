@@ -24,12 +24,12 @@ module.exports = function (io, sockets) {
 
     sockets.forEach(function (socket) {
         _this.players[socket.id] = new Player(socket);
-        socket.join(this.room_name);
+        socket.join(_this.room_name);
     });
 
     console.log('new room (' + 'ROOM_' + (++ROOM_COUNT) + ')');
 
-    room.emit('login');
+    this.room.emit('login');
 
     this.on = function (event, callback) {
         _this.players.forEach(function (player) {
