@@ -11,9 +11,9 @@ module.exports = function () {
     // Gets the question with the appropriate answers from database and returns it.
     // Receives the category name, the difficulty name and the language name.
     // Returns an array with 3 elements:
-    // 0. The question object
+    // 0. The question object - will contain the correct answer).
     // 1. The translated question as a string.
-    // 2. The translated answers as a string array
+    // 2. The translated answers as a string array.
     this.getQuestionWithAnswers = function (category, difficulty, language) {
 
         try {
@@ -98,7 +98,7 @@ module.exports = function () {
 
         this.connection.query(sql, difficultyInt, category, function (error, result) {
             if (!error) {
-                console.log('Rows: ', result);
+                console.log('Question: ', result);
                 return result;
             }
             else {
@@ -152,7 +152,7 @@ module.exports = function () {
 
         this.connection.query(sql, questionId, languageId, function (error, result) {
             if (!error) {
-                console.log('Translated question: ', result);
+                console.log('Translated answers: ', result);
                 return result;
             }
             else {
