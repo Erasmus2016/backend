@@ -26,8 +26,9 @@ module.exports = function () {
                 var isNewQuestion = this.isNewQuestion(question.Id);
 
                 if (isNewQuestion) {
-                    var translatedQuestion = this.getQuestionTranslation(question.Id, languageId);
+                    var translatedQuestion = this.getQuestionTranslation(question.short_code, languageId);
                     var translatedAnswers = this.getAnswersTranslation(question.Id, languageId);
+
                     return [question, translatedQuestion, translatedAnswers];
                 }
             }
@@ -138,14 +139,14 @@ module.exports = function () {
     };
 
     // Returns the translated question for this question.
-    this.getQuestionTranslation = function (questionId, languageId) {
+    this.getQuestionTranslation = function (question_short_code, languageId) {
 
         // Query database and return the translated question.
         var sql = 'SELECT content FROM question_translation ' +
             'WHERE questionId = ? ' +
             'AND languageId = ??';
 
-        this.connection.query(sql, questionId, languageId, function (error, result) {
+        this.connection.query(sql, question_short_code, languageId, function (error, result) {
             if (!error) {
                 console.log('Translated question: ', result);
                 return result;
@@ -157,14 +158,14 @@ module.exports = function () {
     };
 
     // Returns the translated answers for this question as an array.
-    this.getAnswersTranslation = function (questionId, languageId) {
+    this.getAnswersTranslation = function (question_short_code, languageId) {
 
         // Query database and return the translated answers.
         var sql = 'SELECT content FROM answer_translation ' +
             'WHERE questionId = ? ' +
             'AND languageId = ??';
 
-        this.connection.query(sql, questionId, languageId, function (error, result) {
+        this.connection.query(sql, question_short_code, languageId, function (error, result) {
             if (!error) {
                 console.log('Translated answers: ', result);
                 return result;
