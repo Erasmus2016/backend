@@ -19,13 +19,15 @@ module.exports = function (io, sockets) {
         return this[this.current];
     };
     this.players.current = 0;
-    this.room = io.sockets.in('ROOM_' + (++ROOM_COUNT));
+    this.room_name = 'ROOM_' + (++ROOM_COUNT);
+    this.room = io.sockets.in(this.room_name);
 
     sockets.forEach(function (socket) {
         _this.players[socket.id] = new Player(socket);
-        socket.join('ROOM_' + ROOM_COUNT);
+        socket.join(this.room_name);
     });
 
+    console.log('new room (' + 'ROOM_' + (++ROOM_COUNT) + ')');
 
     room.emit('login');
 
@@ -63,6 +65,7 @@ module.exports = function (io, sockets) {
                 return false;
         });
         this.room.emit('map', this.field.getField());
+        console.log('game start (' + _this.room_name + ')');
         this.gameRound();
     };
 
