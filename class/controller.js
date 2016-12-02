@@ -33,7 +33,9 @@ module.exports = function (io, sockets) {
 
     this.on = function (event, callback) {
         _this.players.forEach(function (player) {
+            console.log(player.getId());
             player.getSocket().on(event, function (data) {
+                console.log(data);
                 callback(data, player);
             });
         });
