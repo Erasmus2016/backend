@@ -32,6 +32,7 @@ module.exports = function (io, sockets) {
     this.room.emit('login');
 
     this.on = function (event, callback) {
+        console.log('on');
         _this.players.forEach(function (player) {
             console.log(player.getId());
             player.getSocket().on(event, function (data) {
