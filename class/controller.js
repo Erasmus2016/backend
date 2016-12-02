@@ -18,6 +18,10 @@ module.exports = function (io, sockets) {
     this.players.current = function () {
         return this[this.current];
     };
+    this.players.forEach = function (callback) {
+        for (var i = 0; i < this.length; i++)
+            callback(this[i], i, this);
+    };
     this.players.current = 0;
     this.room_name = 'ROOM_' + (++ROOM_COUNT);
     this.room = io.sockets.in(this.room_name);
