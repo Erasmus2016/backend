@@ -40,6 +40,7 @@ module.exports = function (io, sockets) {
     };
 
     this.on('login', function (data, player) {
+        console.log(data);
         if (VALIDATOR.isColorValid(data.color) ||
             VALIDATOR.isLanguageValid(data.lang) ||
             VALIDATOR.isCategoryValid(data.category)) {
