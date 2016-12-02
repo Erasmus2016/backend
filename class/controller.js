@@ -26,6 +26,9 @@ module.exports = function (io, sockets) {
         socket.join('ROOM_' + ROOM_COUNT);
     });
 
+
+    room.emit('login');
+
     this.on = function (event, callback) {
         _this.players.forEach(function (player) {
             player.getSocket().on(event, function (data) {
