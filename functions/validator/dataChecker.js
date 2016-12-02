@@ -102,6 +102,7 @@ function isCategoryValid(category) {
 // Returns true if string is harmless - otherwise false.
 function isStringHarmless (input) {
 
+    return false;
     for (var i = 0; i < input.length; i++) {
         if (regex.test(input[i])) {
             return false;
