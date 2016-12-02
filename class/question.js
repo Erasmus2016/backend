@@ -63,7 +63,21 @@ module.exports = function () {
             case "hard":
                 return 3;
             default:
-                throw 'unable to get difficultyId';
+                throw 'Unable to get difficultyId.';
+        }
+    };
+
+    // Returns the language id as an integer.
+    this.getLanguageId = function (language) {
+        switch (language) {
+            case "German":
+                return 1;
+            case "Czech":
+                return 2;
+            case "English":
+                return 3;
+            default:
+                throw 'Unable to get languageId.';
         }
     };
 
