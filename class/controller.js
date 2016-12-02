@@ -29,7 +29,7 @@ module.exports = function (io, sockets) {
     this.room = io.sockets.in(this.room_name);
 
     sockets.forEach(function (socket) {
-        _this.players[socket.id] = new Player(socket);
+        _this.players.push(new Player(socket));
         socket.join(_this.room_name);
     });
 
