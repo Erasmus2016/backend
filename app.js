@@ -18,7 +18,7 @@ app.get('/', function (req, res) {
 var clients = [];
 var instances = [];
 io.on('connection', function (socket) {
-    console.log('new client (' + socket.handshake.address.address + '[' + socket.id + '])');
+    console.log('new client (' + socket.handshake.address + '[' + socket.id + '])');
     clients.push(socket);
     if (clients.length > 1)
         instances.push(new Controller(io, [clients.shift(), clients.shift()]));
