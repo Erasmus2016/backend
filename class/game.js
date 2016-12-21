@@ -21,8 +21,9 @@ class Game {
 
     // Returns true, if the color is still available - otherwise false.
     isColorAvailable(color) {
-        if ((index = this.availableColors.indexOf(color)) !== -1) {
-            this.availableColors.splice(index, 1);
+        if (this.availableColors.indexOf(color) !== -1) {
+
+            this.availableColors.(color);
             return true;
         }
         return false;
