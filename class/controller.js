@@ -34,7 +34,7 @@ module.exports = function (io, sockets) {
 
     console.log('new room (' + this.room_name + ')');
 
-    this.room.emit('login');
+    io.sockets.in(_this.room_name).emit('login');
 
     this.on = function (event, callback) {
         this.players.forEach(function (player) {
@@ -57,7 +57,7 @@ module.exports = function (io, sockets) {
         // Check if player color is still available.
         if (_this.game.isColorAvailable(data.color)) {
             player.color = data.color;
-            _this.room.emit('available-colors', _this.game.getAllAvailableColors);
+            io.sockets.in(_this.room_name).emit('available-colors', _this.game.getAllAvailableColors);
             player.isReady = true;
             this.checkReady();
         }
@@ -68,7 +68,7 @@ module.exports = function (io, sockets) {
             if (!player.isReady)
                 return false;
         });
-        this.room.emit('map', this.field.getField());
+        io.sockets.in(_this.room_name).emit('map', this.field.getField());
         console.log('game start (' + _this.room_name + ')');
         this.gameRound();
     };
@@ -86,7 +86,7 @@ module.exports = function (io, sockets) {
     });
 
     this.gameOver = function () {
-        this.room.emit('game-over', this.players.current().getId());
+        io.sockets.in(_this.room_name).emit('game-over', this.players.current().getId());
     };
 
     this.handleQuestion = function (resolve, reject) {
@@ -183,7 +183,7 @@ module.exports = function (io, sockets) {
             players.forEach(function (player) {
                 positions[player.getId()] = player.getPosition();
             });
-            _this.room.emit('player-position', positions);
+            io.sockets.in(_this.room_name).emit('player-position', positions);
             _this.players.next();
             _this.gameRound();
         }).error(function () {
