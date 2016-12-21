@@ -19,7 +19,7 @@ module.exports = function () {
 
     // Returns true, if the color is still available - otherwise false.
     this.IsColorAvailable = function (color) {
-        if (this.availableColors.contains(color)) {
+        if (this.availableColors.indexOf(color) !== -1) {
             this.availableColors.remove(color);
             return true;
         }
