@@ -62,7 +62,7 @@ module.exports = function (io, sockets) {
             });
             //this.room.emit('available-colors', this.game.getAllAvailableColors);
             player.isReady = true;
-            this.checkReady();
+            _this.checkReady();
         }
     });
 
