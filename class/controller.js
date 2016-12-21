@@ -72,7 +72,7 @@ module.exports = function (io, sockets) {
                 return false;
         });
         _this.players.forEach(function (player) {
-           player.getSocket().emit('map', _this.field.getField());
+           player.getSocket().emit('map', _this.game.getField());
         });
         //this.room.emit('map', this.field.getField());
         console.log('game start (' + _this.room_name + ')');
