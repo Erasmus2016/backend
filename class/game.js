@@ -1,6 +1,7 @@
 const Field = require(APPLICATION_PATH + '/playingField/creation/fieldGenerator');
 
 class Game {
+
     constructor() {
         this.field = Field.generateNewField();
         this.category = null;
@@ -21,18 +22,19 @@ class Game {
 
     // Returns true, if the color is still available - otherwise false.
     isColorAvailable(color) {
-        if (this.availableColors.indexOf(color) !== -1) {
+        var index = this.availableColors.indexOf(color);
 
-            this.availableColors.(color);
+        if (index !== -1) {
+            this.availableColors.splice(index, 1);
             return true;
         }
         return false;
     }
 
+    // Returns an array with all remaining colors left.
     getAllAvailableColors() {
         return this.availableColors;
     }
-
 }
 
 module.exports = Game;
