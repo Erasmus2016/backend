@@ -1,32 +1,37 @@
-var Field = require(APPLICATION_PATH + '/playingField/creation/fieldGenerator');
+const Field = require(APPLICATION_PATH + '/playingField/creation/fieldGenerator');
 
-module.exports = function () {
-    this.field = Field.generateNewField();
-    this.category = null;
-    this.availableColors = ['red', 'green', 'blue', 'yellow'];
+class Game {
+    constructor() {
+        this.field = Field.generateNewField();
+        this.category = null;
+        this.availableColors = ['red', 'green', 'blue', 'yellow'];
+    }
 
-    this.getField = function () {
+    getField() {
         return this.field;
-    };
+    }
 
-    this.getCategory = function () {
+    getCategory() {
         return this.category;
-    };
+    }
 
-    this.setCategory = function (category) {
+    setCategory(category) {
         this.category = category;
-    };
+    }
 
     // Returns true, if the color is still available - otherwise false.
-    this.IsColorAvailable = function (color) {
+    IsColorAvailable(color) {
         if (this.availableColors.indexOf(color) !== -1) {
             this.availableColors.remove(color);
             return true;
         }
         return false;
-    };
+    }
 
-    this.getAllAvailableColors = function () {
+    getAllAvailableColors() {
         return this.availableColors;
     }
-};
+
+}
+
+module.exports = Game;
