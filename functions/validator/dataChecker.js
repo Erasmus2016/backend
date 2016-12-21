@@ -102,6 +102,7 @@ function isCategoryValid(category) {
 // Returns true if string is harmless - otherwise false.
 function isStringHarmless (input) {
 
+    //TODO: Remove
     return true;
     for (var i = 0; i < input.length; i++) {
         if (regex.test(input[i])) {
@@ -115,5 +116,6 @@ function isStringHarmless (input) {
 module.exports = {
     isLanguageValid: isLanguageValid,
     isColorValid: isColorValid,
+    isCategoryValid: isCategoryValid,
     checkData: checkData
 };

@@ -11,7 +11,7 @@ module.exports = function () {
     // Gets the question with the appropriate answers from database and returns it.
     // Receives the category name, the difficulty name and the language name.
     // Returns an array with 3 elements:
-    // 0. The question object - will contain the correct answer).
+    // 0. The question object - (will contain the correct answer).
     // 1. The translated question as a string.
     // 2. The translated answers as a string array.
     this.getQuestionWithAnswers = function (category, difficulty, language) {
