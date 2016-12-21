@@ -20,7 +20,7 @@ class Game {
     }
 
     // Returns true, if the color is still available - otherwise false.
-    IsColorAvailable(color) {
+    isColorAvailable(color) {
         if (this.availableColors.indexOf(color) !== -1) {
             this.availableColors.remove(color);
             return true;
