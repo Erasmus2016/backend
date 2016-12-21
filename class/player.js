@@ -32,7 +32,7 @@ module.exports = function (socket) {
         return this.id;
     };
 
-    this.emit = function (data) {
-        this.socket.emit(data);
+    this.emit = function (event, data) {
+        this.socket.emit(event, data);
     };
 };

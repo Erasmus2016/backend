@@ -19,7 +19,7 @@ module.exports = function (io, sockets) {
         return this[this.current];
     };
     this.players.forEach = function (callback) {
-        for (var i = 0; i < this.length; i++)
+        for (let i = 0; i < this.length; i++)
             callback(this[i], i, this);
 
     };
@@ -58,7 +58,7 @@ module.exports = function (io, sockets) {
         if (_this.game.isColorAvailable(data.color)) {
             player.color = data.color;
             _this.players.forEach(function (player) {
-                player.getSocket().emit('available-colors', _this.game.getAllAvailableColors);
+                player.emit('available-colors', _this.game.getAllAvailableColors);
             });
             //this.room.emit('available-colors', this.game.getAllAvailableColors);
             player.isReady = true;
@@ -67,20 +67,20 @@ module.exports = function (io, sockets) {
     });
 
     this.checkReady = function () {
-        this.players.forEach(function (player) {
+        _this.players.forEach(function (player) {
             if (!player.isReady)
                 return false;
         });
         _this.players.forEach(function (player) {
-           player.getSocket().emit('map', _this.game.getField());
+            player.emit('map', _this.game.getField());
         });
         //this.room.emit('map', this.field.getField());
         console.log('game start (' + _this.room_name + ')');
-        this.gameRound();
+        _this.gameRound();
     };
 
     this.gameRound = function () {
-        players.current().emit('roll-the-dice');
+        _players.current().emit('roll-the-dice');
     };
 
     this.on('roll-the-dice', function (data, player) {
@@ -93,7 +93,7 @@ module.exports = function (io, sockets) {
 
     this.gameOver = function () {
         _this.players.forEach(function (player) {
-           player.getSocket().emit('game-over', _this.players.current().getId());
+            player.emit('game-over', _this.players.current().getId());
         });
         //this.room.emit('game-over', this.players.current().getId());
     };
@@ -189,11 +189,11 @@ module.exports = function (io, sockets) {
 
         promise.then(function () {
             var positions = [];
-            players.forEach(function (player) {
+            _players.forEach(function (player) {
                 positions[player.getId()] = player.getPosition();
             });
             _this.players.forEach(function (player) {
-                player.getSocket().emit('player-position', positions);
+                player.emit('player-position', positions);
             });
             //_this.room.emit('player-position', positions);
             _this.players.next();
