@@ -72,7 +72,7 @@ module.exports = function (io, sockets) {
                 return false;
         });
         _this.players.forEach(function (player) {
-           player.getSocket().emit('map', this.field.getField());
+           player.getSocket().emit('map', _this.field.getField());
         });
         //this.room.emit('map', this.field.getField());
         console.log('game start (' + _this.room_name + ')');
@@ -93,7 +93,7 @@ module.exports = function (io, sockets) {
 
     this.gameOver = function () {
         _this.players.forEach(function (player) {
-           player.getSocket().emit('game-over', this.players.current().getId());
+           player.getSocket().emit('game-over', _this.players.current().getId());
         });
         //this.room.emit('game-over', this.players.current().getId());
     };
