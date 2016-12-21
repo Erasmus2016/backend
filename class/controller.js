@@ -57,7 +57,7 @@ module.exports = function (io, sockets) {
         // Check if player color is still available.
         if (_this.game.isColorAvailable(data.color)) {
             player.color = data.color;
-            this.room.emit('available-colors', this.game.getAllAvailableColors);
+            _this.room.emit('available-colors', this.game.getAllAvailableColors);
             player.isReady = true;
             this.checkReady();
         }
