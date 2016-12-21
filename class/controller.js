@@ -25,12 +25,12 @@ module.exports = function (io, sockets) {
     };
     this.players.current = 0;
     this.room_name = 'ROOM_' + (++ROOM_COUNT);
-    this.room = io.sockets.in(this.room_name);
 
     sockets.forEach(function (socket) {
         _this.players.push(new Player(socket));
         socket.join(_this.room_name);
     });
+    this.room = io.sockets.in(this.room_name);
 
     console.log('new room (' + this.room_name + ')');
 
