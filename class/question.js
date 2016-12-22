@@ -5,7 +5,7 @@
 class Question {
 
     constructor() {
-        this.mysql = require('mysql');
+        this.mysqldb = require('mysql');
         this.connection = null;
         this.usedQuestions = [];
     };
@@ -182,7 +182,7 @@ class Question {
     getDbConnection() {
         var dbConfigFile = require(APPLICATION_PATH + '/config/db.json');
 
-        return this.mysql.createConnection({
+        return this.mysqldb.createConnection({
             host: dbConfigFile.host,
             user: dbConfigFile.user,
             password: dbConfigFile.pass,
