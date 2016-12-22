@@ -91,13 +91,13 @@ class Question {
         var sql = 'SELECT id FROM language ' +
             'WHERE language = ?';
 
-        this.connection.query(sql, language, function (error, result) {
-            if (!error) {
-                console.log('LanguageId: ', result);
-                return result;
+        this.connection.query(sql, [language], function (error, result) {
+            if (error) {
+                throw error;
             }
             else {
-                throw error;
+                console.log('LanguageId: ', result);
+                return result;
             }
         });
     };
@@ -183,10 +183,12 @@ class Question {
         var dbConfigFile = require(APPLICATION_PATH + '/config/db.json');
 
         return this.mysqldb.createConnection({
+
             host: dbConfigFile.host,
             user: dbConfigFile.user,
             password: dbConfigFile.pass,
-            database: dbConfigFile.db
+            database: dbConfigFile.db,
+            charset: 'latin1_swedish_ci'
         });
     };
 }
