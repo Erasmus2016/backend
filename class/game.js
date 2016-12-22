@@ -1,5 +1,6 @@
 const Field = require(APPLICATION_PATH + '/playingField/creation/fieldGenerator');
 
+
 class Game {
 
     constructor() {
