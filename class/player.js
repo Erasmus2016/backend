@@ -50,8 +50,32 @@ class Player {
         this.isReady = true;
     };
 
-    getPlayersLanguage = function () {
+    setPlayerNotReady = function () {
+        this.isReady = false;
+    };
+
+    getPlayerName = function () {
+        return this.name;
+    };
+
+    setPlayerName = function (name) {
+        this.name = name;
+    };
+
+    getPlayerColor = function () {
+        return this.color;
+    };
+
+    setPlayerColor = function (color) {
+        this.color = color;
+    };
+
+    getPlayerLanguage = function () {
         return this.lang;
+    };
+
+    setPlayerLanguage = function (language) {
+        this.lang = language;
     };
 
     emit = function (event, data) {
