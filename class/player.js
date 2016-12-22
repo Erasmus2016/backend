@@ -42,38 +42,47 @@ class Player {
         return this.socketId;
     };
 
+    // Returns whether the player is ready or not.
     isPlayerReady = function () {
         return this.isReady;
     };
 
+    // Sets the player ready.
     setPlayerReady = function () {
         this.isReady = true;
     };
 
+    // Sets the player as not ready.
     setPlayerNotReady = function () {
         this.isReady = false;
     };
 
+    // Returns the name of the player.
     getPlayerName = function () {
         return this.name;
     };
 
+    // Sets the name for the player.
     setPlayerName = function (name) {
         this.name = name;
     };
 
+    // Returns the color of the player.
     getPlayerColor = function () {
         return this.color;
     };
 
+    // Sets the color for the player.
     setPlayerColor = function (color) {
         this.color = color;
     };
 
+    // Returns the language of the player.
     getPlayerLanguage = function () {
         return this.lang;
     };
 
+    // Sets the language for the player.
     setPlayerLanguage = function (language) {
         this.lang = language;
     };
