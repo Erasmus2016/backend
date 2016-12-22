@@ -8,6 +8,24 @@ class Question {
         this.mysqldb = require('mysql');
         this.connection = null;
         this.usedQuestions = [];
+
+        this.initDb();
+    };
+
+    // Initializes database and establishes connection to database.
+    initDb() {
+
+        // Get and set database connection.
+        this.connection = this.getDbConnection();
+
+        // Connect to database.
+        this.connection.connect(function (error) {
+            if (error) {
+                throw error;
+            }
+
+            console.log('Database connection established.');
+        });
     };
 
     // Gets the question with the appropriate answers from database and returns it.
@@ -19,8 +37,6 @@ class Question {
     getQuestionWithAnswers(category, difficulty, language) {
 
         try {
-            this.initDb();
-
             var languageId = this.getLanguage(language);
 
             while (true) {
@@ -38,22 +54,6 @@ class Question {
         finally {
             this.connection.end();
         }
-    };
-
-    // Initializes database and establishes connection to database.
-    initDb() {
-
-        // Get and set database connection.
-        this.connection = this.getDbConnection();
-
-        // Connect to database.
-        this.connection.connect(function (error) {
-            if (error) {
-                throw error;
-            }
-
-            console.log('Database connection established.');
-        });
     };
 
     // Returns the question difficulty as an integer.
@@ -107,7 +107,7 @@ class Question {
 
         var difficultyInt = this.getDifficulty(difficulty);
 
-        // Query database and return a random question.
+        // Query database and return one random question.
         var sql = 'SELECT * FROM question ' +
             'WHERE difficulty = ? ' +
             'AND category = ? ' +
