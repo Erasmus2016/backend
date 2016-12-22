@@ -71,17 +71,14 @@ module.exports = function (io, sockets) {
 
     this.checkReady = function () {
         for (let i = 0, len = _this.players.length; i < len; i++) {
-            //for (let player in _this.players){
             if (!this.players[i].isReady)
                 return false;
         }
-        /*_this.players.forEach(function (player) {
 
-         });*/
         _this.players.forEach(function (player) {
             player.emit('map', _this.game.getField());
         });
-        //this.room.emit('map', this.field.getField());
+
         console.log('game start (' + _this.room_name + ')');
         _this.gameRound();
     };
