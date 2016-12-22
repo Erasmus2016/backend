@@ -6,24 +6,26 @@ var Player = require(APPLICATION_PATH + '/class/player');
 //var Question = require(APPLICATION_PATH + '/class/question');
 
 module.exports = function (io, sockets) {
-    var _this = this;
+    let _this = this;
     this.game = new Game();
     this.players = [];
     //this.question = new Question();
     this.players.next = function () {
-        if (this.current + 1 == this.length)
+        if (this.currentI + 1 == this.length)
             return this[0];
-        return this[++this.current];
+        return this[++this.currentI];
     };
     this.players.current = function () {
-        return this[this.current];
+        return this[this.currentI];
     };
     this.players.forEach = function (callback) {
         for (let i = 0; i < this.length; i++)
             callback(this[i], i, this);
 
     };
-    this.players.current = 0;
+
+
+    this.players.currentI = 0;
     this.room_name = 'ROOM_' + (++ROOM_COUNT);
     this.room = io.sockets.in(this.room_name);
 
@@ -45,6 +47,7 @@ module.exports = function (io, sockets) {
     };
 
     this.on('login', function (data, player) {
+
         console.log(data);
         if (!VALIDATOR.isColorValid(data.color) || !VALIDATOR.isLanguageValid(data.lang) || !VALIDATOR.isCategoryValid(data.category)) {
             throw "Invalid data (color, category or language) from client.";
@@ -67,10 +70,14 @@ module.exports = function (io, sockets) {
     });
 
     this.checkReady = function () {
-        _this.players.forEach(function (player) {
-            if (!player.isReady)
+        for (let i = 0, len = _this.players.length; i < len; i++) {
+            //for (let player in _this.players){
+            if (!this.players[i].isReady)
                 return false;
-        });
+        }
+        /*_this.players.forEach(function (player) {
+
+         });*/
         _this.players.forEach(function (player) {
             player.emit('map', _this.game.getField());
         });
@@ -80,14 +87,14 @@ module.exports = function (io, sockets) {
     };
 
     this.gameRound = function () {
-        _players.current().emit('roll-the-dice');
+        this.players.current().emit('roll-the-dice');
     };
 
     this.on('roll-the-dice', function (data, player) {
-        if (player.getId() == this.players.current().id) {
+        if (player.getId() == _this.players.current().id) {
             var dice = RANDOM_NUMBER.getRandomDiceValue();
             player.emit('dice-result', dice);
-            this.process(dice);
+            _this.process(dice);
         }
     });
 
