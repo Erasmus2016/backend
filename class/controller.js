@@ -21,7 +21,6 @@ module.exports = function (io, sockets) {
     this.players.forEach = function (callback) {
         for (let i = 0; i < this.length; i++)
             callback(this[i], i, this);
-
     };
 
 
@@ -61,9 +60,8 @@ module.exports = function (io, sockets) {
         if (_this.game.isColorAvailable(data.color)) {
             player.color = data.color;
             _this.players.forEach(function (player) {
-                player.emit('available-colors', _this.game.getAllAvailableColors);
+                player.emit('available-colors', _this.game.getAllAvailableColors());
             });
-            //this.room.emit('available-colors', this.game.getAllAvailableColors);
             player.isReady = true;
             _this.checkReady();
         }
@@ -71,7 +69,6 @@ module.exports = function (io, sockets) {
 
     this.checkReady = function () {
         for (let i = 0; i < _this.players.length; i++) {
-            console.log(this.players[i]);
             if (!this.players[i].isReady)
                 return false;
         }
