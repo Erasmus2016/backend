@@ -2,14 +2,14 @@
 
 
 const Game = require(APPLICATION_PATH + '/class/game'),
-    Player = require(APPLICATION_PATH + '/class/player'),
-    Question = require(APPLICATION_PATH + '/class/question');
+    Player = require(APPLICATION_PATH + '/class/player');/*,
+    Question = require(APPLICATION_PATH + '/class/question');*/
 
 module.exports = function (io, sockets) {
     let _this = this;
     this.game = new Game();
     this.players = [];
-    this.question = new Question();
+    //this.question = new Question();
     this.players.next = function () {
         if (this.currentI + 1 == this.length)
             return this[0];
