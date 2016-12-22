@@ -2,14 +2,13 @@
  * Created by Manuel on 01.12.2016.
  */
 
+class Question {
 
-
-
-module.exports = function () {
-
-    this.mysql = require('mysql');
-    this.connection = null;
-    this.usedQuestions = [];
+    constructor() {
+        this.mysqldb = require('mysql');
+        this.connection = null;
+        this.usedQuestions = [];
+    };
 
     // Gets the question with the appropriate answers from database and returns it.
     // Receives the category name, the difficulty name and the language name.
@@ -17,7 +16,7 @@ module.exports = function () {
     // 0. The question object - (will contain the correct answer).
     // 1. The translated question as a string.
     // 2. The translated answers as a string array.
-    this.getQuestionWithAnswers = function (category, difficulty, language) {
+    getQuestionWithAnswers(category, difficulty, language) {
 
         try {
             this.initDb();
@@ -42,7 +41,7 @@ module.exports = function () {
     };
 
     // Initializes database and establishes connection to database.
-    this.initDb = function () {
+    initDb() {
 
         // Get and set database connection.
         this.connection = this.getDbConnection();
@@ -58,7 +57,7 @@ module.exports = function () {
     };
 
     // Returns the question difficulty as an integer.
-    this.getDifficulty = function (difficulty) {
+    getDifficulty(difficulty) {
         switch (difficulty) {
             case "easy":
                 return 1;
@@ -72,7 +71,7 @@ module.exports = function () {
     };
 
     // Returns the language id as an integer.
-    this.getLanguageId = function (language) {
+    getLanguageId(language) {
         switch (language) {
             case "German":
                 return 1;
@@ -86,7 +85,7 @@ module.exports = function () {
     };
 
     // Returns the language id for both question and answer.
-    this.getLanguage = function (language) {
+    getLanguage(language) {
 
         // Query database and return a random question.
         var sql = 'SELECT id FROM language ' +
@@ -104,7 +103,7 @@ module.exports = function () {
     };
 
     // Returns a random question object based on input category and difficulty level.
-    this.getQuestion = function (category, difficulty) {
+    getQuestion(category, difficulty) {
 
         var difficultyInt = this.getDifficulty(difficulty);
 
@@ -126,7 +125,7 @@ module.exports = function () {
     };
 
     // Checks and returns true, if the question wasn't already used within this game - otherwise false.
-    this.isNewQuestion = function (questionId) {
+    isNewQuestion(questionId) {
         if (!this.usedQuestions.contains(questionId)) {
             this.saveQuestionIdToRam(questionId);
             return true;
@@ -137,12 +136,12 @@ module.exports = function () {
     };
 
     // Adds a questionId to the already used questions array.
-    this.saveQuestionIdToRam = function (questionId) {
+    saveQuestionIdToRam(questionId) {
         this.usedQuestions.push(questionId);
     };
 
     // Returns the translated question for this question.
-    this.getQuestionTranslation = function (question_short_code, languageId) {
+    getQuestionTranslation(question_short_code, languageId) {
 
         // Query database and return the translated question.
         var sql = 'SELECT content FROM question_translation ' +
@@ -161,7 +160,7 @@ module.exports = function () {
     };
 
     // Returns the translated answers for this question as an array.
-    this.getAnswersTranslation = function (question_short_code, languageId) {
+    getAnswersTranslation(question_short_code, languageId) {
 
         // Query database and return the translated answers.
         var sql = 'SELECT content FROM answer_translation ' +
@@ -180,14 +179,16 @@ module.exports = function () {
     };
 
     // Set up and return database connection.
-    this.getDbConnection = function () {
+    getDbConnection() {
         var dbConfigFile = require(APPLICATION_PATH + '/config/db.json');
 
-        return this.mysql.createConnection({
+        return this.mysqldb.createConnection({
             host: dbConfigFile.host,
             user: dbConfigFile.user,
             password: dbConfigFile.pass,
             database: dbConfigFile.db
         });
     };
-};
+}
+
+module.exports = Question;
