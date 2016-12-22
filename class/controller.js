@@ -70,7 +70,8 @@ module.exports = function (io, sockets) {
     });
 
     this.checkReady = function () {
-        for (let i = 0, len = _this.players.length; i < len; i++) {
+        for (let i = 0; i < _this.players.length; i++) {
+            console.log(this.players[i]);
             if (!this.players[i].isReady)
                 return false;
         }
