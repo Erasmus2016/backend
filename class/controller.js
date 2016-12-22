@@ -107,7 +107,7 @@ module.exports = function (io, sockets) {
         var difficulty;
 
         //TODO: Check: get difficulty from frontend
-        this.players.curent().once('set-difficulty', function (data) {
+        this.players.current().once('set-difficulty', function (data) {
 
             if (data.isNumber && data == 1 || data == 3 || data == 5) {
                 difficulty = data;

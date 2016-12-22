@@ -10,7 +10,7 @@ class Player {
         this.color = null;
         this.lang = 'en';
         this.position = 0;
-    }
+    };
 
     // Sets the players position.
     setPosition = function (position) {

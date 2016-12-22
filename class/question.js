@@ -2,6 +2,9 @@
  * Created by Manuel on 01.12.2016.
  */
 
+
+
+
 module.exports = function () {
 
     this.mysql = require('mysql');
