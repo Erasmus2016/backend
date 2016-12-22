@@ -13,81 +13,81 @@ class Player {
     };
 
     // Sets the players position.
-    setPosition = function (position) {
+    setPosition(position) {
         return this.position = position;
     };
 
     // Moves the players position ahead.
-    addPosition = function (add) {
+    addPosition(add) {
         return this.position += add;
     };
 
     // Moves the players position behind.
-    subPosition = function (remove) {
+    subPosition(remove) {
         return this.position -= remove;
     };
 
     // Returns the current players position.
-    getPosition = function () {
+    getPosition() {
         return this.position;
     };
 
     // Returns the socket.
-    getSocket = function () {
+    getSocket() {
         return this.socket;
     };
 
     // Returns the socket id.
-    getId = function () {
+    getId() {
         return this.socketId;
     };
 
     // Returns whether the player is ready or not.
-    isPlayerReady = function () {
+    isPlayerReady() {
         return this.isReady;
     };
 
     // Sets the player ready.
-    setPlayerReady = function () {
+    setPlayerReady() {
         this.isReady = true;
     };
 
     // Sets the player as not ready.
-    setPlayerNotReady = function () {
+    setPlayerNotReady() {
         this.isReady = false;
     };
 
     // Returns the name of the player.
-    getPlayerName = function () {
+    getPlayerName() {
         return this.name;
     };
 
     // Sets the name for the player.
-    setPlayerName = function (name) {
+    setPlayerName(name) {
         this.name = name;
     };
 
     // Returns the color of the player.
-    getPlayerColor = function () {
+    getPlayerColor() {
         return this.color;
     };
 
     // Sets the color for the player.
-    setPlayerColor = function (color) {
+    setPlayerColor(color) {
         this.color = color;
     };
 
     // Returns the language of the player.
-    getPlayerLanguage = function () {
+    getPlayerLanguage() {
         return this.lang;
     };
 
     // Sets the language for the player.
-    setPlayerLanguage = function (language) {
+    setPlayerLanguage(language) {
         this.lang = language;
     };
 
-    emit = function (event, data) {
+    emit(event, data) {
         this.socket.emit(event, data);
     };
 }
