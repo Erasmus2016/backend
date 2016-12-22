@@ -54,6 +54,7 @@ module.exports = function (io, sockets) {
 
         player.lang = data.lang;
         player.name = data.name;
+        // TODO: The last player changes the category for all players in this game. Logic bug.
         _this.game.setCategory(data.category);
 
         // Check if player color is still available.
@@ -103,8 +104,8 @@ module.exports = function (io, sockets) {
     this.handleQuestion = function (resolve, reject) {
 
         // TODO: TEST
-        resolve();
-        return;
+        // resolve();
+        // return;
 
         var difficulty;
 
