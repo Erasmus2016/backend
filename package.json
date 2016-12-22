@@ -1,9 +1,26 @@
 {
-  "name": "Barmania Backend",
-  "version": "0.0.1",
-  "private": true,
+  "name": "barmania-backend",
+  "version": "1.0.0",
+  "description": "[![Join the chat at https://gitter.im/Erasmus2016/backend](https://badges.gitter.im/Erasmus2016/backend.svg)](https://gitter.im/Erasmus2016/backend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) Backend",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
   "dependencies": {
-    "express": "^4.14.0",
-    "socket.io": "^1.7.2"
-  }
+    "express": "^4.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Erasmus2016/backend.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Erasmus2016/backend/issues"
+  },
+  "homepage": "https://github.com/Erasmus2016/backend#readme"
 }
