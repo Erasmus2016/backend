@@ -1,10 +1,11 @@
 global.APPLICATION_PATH = __dirname;
 
-const Question = require('./class/question');
-let question = new Question();
+var Question = require('./class/question');
+var question = new Question();
 
+var test = question.getQuestionWithAnswers("History", "easy", "English");
 
-
+var test2 = "";
 /*global.APPLICATION_PATH = __dirname;
  global.ROOM_COUNT = 0;
  global.VALIDATOR = require('./functions/validator/dataChecker');
