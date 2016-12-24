@@ -18,8 +18,8 @@ class Database {
             password        : this.config.pass,
             database        : this.config.db,
             charset         : 'utf8_general_ci',
-            port            : 3306,
             // charset         : 'latin1_swedish_ci',
+            port            : 3306,
             debug           :  false
         });
 
@@ -30,9 +30,12 @@ class Database {
     query(sql, values = []) {
         const _this = this;
         return new Promise(function (resolve, reject) {
-            _this.pool.query(sql, values, function (err, res, fields) {
-                if (err) reject(err);
-                resolve(res, fields);
+            _this.pool.query(sql, values, function (error, result, fields) {
+                if (error) {
+                    reject(error);
+                }
+
+                resolve(result, fields);
             });
         });
     }

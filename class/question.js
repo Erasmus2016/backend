@@ -22,7 +22,7 @@ class Question {
             let _this = this;
 
             // Query database and get the language id.
-            // TODO: make sure, the database languages entries are not going to change - usa a switch-case instead of an database query -> getLanguageId function.
+            // TODO: make sure, the database languages entries are not going to change -> use a switch-case instead of an database query -> getLanguageId function.
             var sql1 = 'SELECT id FROM language ' +
                 'WHERE language = "' + language + '"';
 
