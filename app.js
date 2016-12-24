@@ -1,15 +1,40 @@
 global.APPLICATION_PATH = __dirname;
 
-// var Question = require('./class/question');
-// var question = new Question();
-//
-// var test = question.getQuestionWithAnswers("History", "easy", "English");
-//
-// var test2 = "";
-global.APPLICATION_PATH = __dirname;
- global.ROOM_COUNT = 0;
- global.VALIDATOR = require('./functions/validator/dataChecker');
- global.RANDOM_NUMBER = require('./functions/randomNumber');
+
+global.ROOM_COUNT = 0;
+global.VALIDATOR = require('./functions/validator/dataChecker');
+global.RANDOM_NUMBER = require('./functions/randomNumber');
+
+
+const Database = require('./class/db');
+
+new Database(function (db) {
+    global.DB = db;
+
+    //die Question Klasse analog hierzu anpassen (DB ist ab hier global)
+    function getQuestionWithAnswers(difficulty, category) {
+        return DB.query(`SELECT * FROM question 
+            WHERE difficulty = ?
+            AND category = ?
+            ORDER BY RAND() LIMIT 1`,
+            [difficulty, category]);
+    }
+
+    //der Aufruf im Controller
+    getQuestionWithAnswers(1, 'History').then(function (result) {
+        console.log(result);
+    });
+});
+/**
+
+ const Question = require('./class/question');
+ const question = new Question();
+ //
+ let test = question.getQuestionWithAnswers("History", "easy", "English");
+ //
+ // var test2 = "";
+ /**
+
 
  var Controller = require('./class/controller');
 
@@ -38,4 +63,4 @@ global.APPLICATION_PATH = __dirname;
  clients.push(socket);
  if (clients.length > 1)
  instances.push(new Controller(io, [clients.shift(), clients.shift()]));
- });
+ });*/
