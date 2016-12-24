@@ -5,26 +5,21 @@ global.ROOM_COUNT = 0;
 global.VALIDATOR = require('./functions/validator/dataChecker');
 global.RANDOM_NUMBER = require('./functions/randomNumber');
 
+let Question = require('./class/question');
+let question = new Question();
 
-const Database = require('./class/db');
+const Database = require('./class/database');
 
 new Database(function (db) {
     global.DB = db;
-
-    //die Question Klasse analog hierzu anpassen (DB ist ab hier global)
-    function getQuestionWithAnswers(difficulty, category) {
-        return DB.query(`SELECT * FROM question 
-            WHERE difficulty = ?
-            AND category = ?
-            ORDER BY RAND() LIMIT 1`,
-            [difficulty, category]);
-    }
-
-    //der Aufruf im Controller
-    getQuestionWithAnswers(1, 'History').then(function (result) {
-        console.log(result);
-    });
 });
+
+    question.getQuestionWithAnswers('History', 'easy', "English").then(function (result) {
+        console.log("Result from database call: " + result);
+        console.log(result[0]);
+        console.log(result[2]);
+    });
+// });
 /**
 
  const Question = require('./class/question');

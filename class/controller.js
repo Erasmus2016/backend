@@ -121,7 +121,7 @@ module.exports = function (io, sockets) {
 
             // Get question and answers from database.
             var questionObject = _this.getQuestion();
-            var correctAnswer = questionObject[0].correctAnswer;
+            var correctAnswerId = questionObject[0].correctAnswer;
 
             // Send question and answers to client.
             _this.players.current().emit('question', {
@@ -134,7 +134,7 @@ module.exports = function (io, sockets) {
             _this.players.current().once('answer', function (answerId) {
 
                 // Check for correct answer.
-                if (answerId.isNumber && answerId === correctAnswer) {
+                if (answerId.isNumber && answerId === correctAnswerId) {
                     _this.players.current().addPosition(difficulty);
                 } else {
                     _this.players.current().subPosition(difficulty);
@@ -155,7 +155,10 @@ module.exports = function (io, sockets) {
         var category = _this.game.getCategory();
         var language = _this.players.current().lang;
 
-        return _this.question.getQuestionWithAnswers(category, difficulty, language);
+        // TODO: Testing this call.
+        return _this.question.getQuestionWithAnswers(category, difficulty, language).then(function (result) {
+            console.log("Result from database call: " + result);
+        });
     };
 
     this.process = function (dice) {
