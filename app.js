@@ -5,6 +5,51 @@ global.ROOM_COUNT = 0;
 global.VALIDATOR = require('./functions/validator/dataChecker');
 global.RANDOM_NUMBER = require('./functions/randomNumber');
 
+// START: Random dice throw testing.
+var dice;
+var diceThrows = 1000000000;
+var one = 0;
+var two = 0;
+var three = 0;
+var four = 0;
+var five = 0;
+var six = 0;
+
+for (var i = 0; i < diceThrows; i++) {
+    dice = RANDOM_NUMBER.getRandomDiceValue();
+
+    switch (dice) {
+        case 1:
+            one++;
+            break;
+        case 2:
+            two++;
+            break;
+        case 3:
+            three++;
+            break;
+        case 4:
+            four++;
+            break;
+        case 5:
+            five++;
+            break;
+        case 6:
+            six++;
+            break;
+        default:
+            throw "error";
+    };
+};
+
+console.log("1: " + one);
+console.log("2: " + two);
+console.log("3: " + three);
+console.log("4: " + four);
+console.log("5: " + five);
+console.log("6: " + six);
+// END: Random dice throw testing.
+
 let Question = require('./class/question');
 let question = new Question();
 

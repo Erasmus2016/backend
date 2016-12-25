@@ -15,7 +15,12 @@ function getRandomNumber(min, max) {
 
 function getRandomInteger(min, max) {
     var result = Math.floor(getRandomNumber(min, max));
-    if (result >= max) result = max - 1;
+
+    // We don't need this, but better save than sorry.
+    if (result >= max) {
+        result = max - 1;
+    }
+
     return result;
 }
 
