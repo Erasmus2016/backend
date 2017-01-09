@@ -1,3 +1,6 @@
+const Database = require('./class/database'),
+    Controller = require('./class/controller');
+
 global.APPLICATION_PATH = __dirname;
 
 global.ROOM_COUNT = 0;
