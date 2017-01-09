@@ -1,11 +1,11 @@
-const Database = require('./class/database'),
-    Controller = require('./class/controller');
-
 global.APPLICATION_PATH = __dirname;
-
 global.ROOM_COUNT = 0;
 global.VALIDATOR = require('./functions/validator/dataChecker');
 global.RANDOM_NUMBER = require('./functions/randomNumber');
+
+const Database = require('./class/database'),
+    Controller = require('./class/controller');
+
 new Database(function (db) {
     global.DB = db;
 
