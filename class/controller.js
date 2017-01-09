@@ -87,6 +87,7 @@ module.exports = function (io, sockets) {
     };
 
     this.on('roll-the-dice', function (data, player) {
+        console.log(player);
         if (player.getId() == _this.players.current().id) {
             var dice = RANDOM_NUMBER.getRandomDiceValue();
             player.emit('dice-result', dice);
