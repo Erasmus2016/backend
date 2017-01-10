@@ -1,6 +1,5 @@
 //TODO: set category on game class on game init.
 
-
 const Game = require(APPLICATION_PATH + '/class/game'),
     Player = require(APPLICATION_PATH + '/class/player'),
     Question = require(APPLICATION_PATH + '/class/question');
@@ -46,6 +45,8 @@ module.exports = function (io, sockets) {
         });
     };
 
+    // Will be triggered on login action.
+    // Map user (player) input to player object.
     this.on('login', function (data, player) {
 
         console.log(data);
@@ -70,6 +71,8 @@ module.exports = function (io, sockets) {
         }
     });
 
+    // Checks if all players within a game are ready.
+    // If so, send all players the game field (map) and trigger first game round.
     this.checkReady = function () {
         for (let i = 0; i < _this.players.length; i++) {
             if (!this.players[i].isReady)
@@ -84,31 +87,37 @@ module.exports = function (io, sockets) {
         _this.gameRound();
     };
 
+    // The current player will be notified to role the dice.
     this.gameRound = function () {
         this.players.current().emit('roll-the-dice');
     };
 
+    // Handles the dice role action.
     this.on('roll-the-dice', function (data, player) {
         console.log(player);
         if (player.getId() == _this.players.current().id) {
+            // Get a random dice value and send it to the player.
             var dice = RANDOM_NUMBER.getRandomDiceValue();
             player.emit('dice-result', dice);
             _this.process(dice);
         }
     });
 
+    // Handles the end of game action. Sends the id of the winner player.
     this.gameOver = function () {
         _this.players.forEach(function (player) {
             player.emit('game-over', _this.players.current().getId());
         });
     };
 
+    // Handles the question logic.
     this.handleQuestion = function (resolve, reject) {
 
         // TODO: TEST
         var difficulty;
 
         //TODO: Check: get difficulty from frontend
+        // Get player difficulty value for a question.
         _this.players.current().once('set-difficulty', function (data) {
 
             if (data.isNumber && (data == 1 || data == 3 || data == 5)) {
@@ -118,7 +127,7 @@ module.exports = function (io, sockets) {
                 throw 'Invalid difficulty value from client.';
             }
 
-            // Get question and answers from database.
+            // Get a question with its appropriate answers from database.
             var questionObject = _this.getQuestion(difficulty);
             var correctAnswerId = questionObject[0].correctAnswer;
 
@@ -132,7 +141,7 @@ module.exports = function (io, sockets) {
             // Get and process question answer from client.
             _this.players.current().once('answer', function (answerId) {
 
-                // Check for correct answer.
+                // Check for correct answer and move player appropriate.
                 if (answerId.isNumber && answerId === correctAnswerId) {
                     _this.players.current().addPosition(difficulty);
                 } else {
@@ -160,14 +169,15 @@ module.exports = function (io, sockets) {
         });
     };
 
+    // Moves the player to a new position on the playing field (map).
     this.process = function (dice) {
         var pos = this.players.current().addPosition(dice);
 
-        // Check if player has finished the game.
+        // Check if the player has finished the game.
         if (_this.game.getField().length > pos - 1) {
             _this.gameOver();
             return;
-            // Check if player is behind the start field.
+        // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
             _this.players.current().setPosition(0);
@@ -175,6 +185,7 @@ module.exports = function (io, sockets) {
 
         var step = _this.game.getField()[pos];
 
+        // Check the new position of the player and deals with special fields.
         var promise = new Promise(function (resolve, reject) {
             switch (step.type) {
                 case 'default':
@@ -192,6 +203,7 @@ module.exports = function (io, sockets) {
             }
         });
 
+        // Notify all players with the new position of all players.
         promise.then(function () {
             var positions = [];
             _this.players.forEach(function (player) {
@@ -200,7 +212,8 @@ module.exports = function (io, sockets) {
             _this.players.forEach(function (player) {
                 player.emit('player-position', positions);
             });
-            //_this.room.emit('player-position', positions);
+
+            // It's the next players turn.
             _this.players.next();
             _this.gameRound();
         }).error(function () {
