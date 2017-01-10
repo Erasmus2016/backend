@@ -2,7 +2,7 @@
  * Created by Manuel on 29.11.2016.
  */
 
-var regex = /[A-Za-z0-9ÖÄÜäöüß]/g;
+var regex = /^[\wäöüßáčďéěíňóřšťúůýž]+$/ig;
 
 // Gets and checks an input data objects and returns a checked version.
 function checkData(data) {
@@ -101,21 +101,13 @@ function isCategoryValid(category) {
 // Checks if an input string is harmless.
 // Returns true if string is harmless - otherwise false.
 function isStringHarmless (input) {
-
-    //TODO: Remove
-    return true;
-    for (var i = 0; i < input.length; i++) {
-        if (regex.test(input[i])) {
-            return false;
-        }
-    }
-
-    return true;
+    return regex.test(input);
 }
 
 module.exports = {
     isLanguageValid: isLanguageValid,
     isColorValid: isColorValid,
     isCategoryValid: isCategoryValid,
+    isStringHarmless: isStringHarmless,
     checkData: checkData
 };

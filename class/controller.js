@@ -2,14 +2,15 @@
 
 
 const Game = require(APPLICATION_PATH + '/class/game'),
-    Player = require(APPLICATION_PATH + '/class/player');/*,
-    Question = require(APPLICATION_PATH + '/class/question');*/
+    Player = require(APPLICATION_PATH + '/class/player'),
+    Question = require(APPLICATION_PATH + '/class/question');
 
 module.exports = function (io, sockets) {
     let _this = this;
-    this.game = new Game();
     this.players = [];
-    //this.question = new Question();
+    this.game = new Game();
+    this.question = new Question();
+
     this.players.next = function () {
         if (this.currentI + 1 == this.length)
             return this[0];
@@ -48,8 +49,9 @@ module.exports = function (io, sockets) {
     this.on('login', function (data, player) {
 
         console.log(data);
-        if (!VALIDATOR.isColorValid(data.color) || !VALIDATOR.isLanguageValid(data.lang) || !VALIDATOR.isCategoryValid(data.category)) {
-            throw "Invalid data (color, category or language) from client.";
+        if (!VALIDATOR.isColorValid(data.color) || !VALIDATOR.isLanguageValid(data.lang)
+            || !VALIDATOR.isCategoryValid(data.category) || VALIDATOR.isStringHarmless(data.name)) {
+            throw "Invalid data (color, category, name or language) from client.";
         }
 
         player.lang = data.lang;

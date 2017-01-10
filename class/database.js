@@ -19,7 +19,7 @@ class Database {
             database        : this.config.db,
             charset         : 'utf8_general_ci',    // Default charset.
             port: 3306,                 // Default mySQL port.
-            debug           :  false
+            debug: false
         });
 
         initCallback(this);
