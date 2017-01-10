@@ -9,7 +9,6 @@ const Database = require('./class/database'),
 new Database(function (db) {
     global.DB = db;
 
-
     const Controller = require('./class/controller'),
         app = require('express')();
 

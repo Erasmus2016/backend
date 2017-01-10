@@ -99,21 +99,17 @@ module.exports = function (io, sockets) {
         _this.players.forEach(function (player) {
             player.emit('game-over', _this.players.current().getId());
         });
-        //this.room.emit('game-over', this.players.current().getId());
     };
 
     this.handleQuestion = function (resolve, reject) {
 
         // TODO: TEST
-        // resolve();
-        // return;
-
         var difficulty;
 
         //TODO: Check: get difficulty from frontend
-        this.players.current().once('set-difficulty', function (data) {
+        _this.players.current().once('set-difficulty', function (data) {
 
-            if (data.isNumber && data == 1 || data == 3 || data == 5) {
+            if (data.isNumber && (data == 1 || data == 3 || data == 5)) {
                 difficulty = data;
             }
             else {
