@@ -147,7 +147,7 @@ module.exports = function (io, sockets) {
         }, 20000);  // 20 seconds.
     };
 
-    // Gets a random question with the appropriate answers.
+    // Gets a random question with the appropriate answers from database.
     this.getQuestion = function (difficulty) {
         var category = _this.game.getCategory();
         var language = _this.players.current().lang;
@@ -162,16 +162,16 @@ module.exports = function (io, sockets) {
         var pos = this.players.current().addPosition(dice);
 
         // Check if player has finished the game.
-        if (this.game.getField().length > pos - 1) {
-            this.gameOver();
+        if (_this.game.getField().length > pos - 1) {
+            _this.gameOver();
             return;
             // Check if player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
-            this.players.current().setPosition(0);
+            _this.players.current().setPosition(0);
         }
 
-        var step = this.game.getField()[pos];
+        var step = _this.game.getField()[pos];
 
         var promise = new Promise(function (resolve, reject) {
             switch (step.type) {
@@ -192,7 +192,7 @@ module.exports = function (io, sockets) {
 
         promise.then(function () {
             var positions = [];
-            _players.forEach(function (player) {
+            _this.players.forEach(function (player) {
                 positions[player.getId()] = player.getPosition();
             });
             _this.players.forEach(function (player) {
