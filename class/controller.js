@@ -117,10 +117,10 @@ module.exports = function (io, sockets) {
             }
 
             // Get question and answers from database.
-            var questionObject = _this.getQuestion();
+            var questionObject = _this.getQuestion(difficulty);
             var correctAnswerId = questionObject[0].correctAnswer;
 
-            // Send question and answers to client.
+            // Send question and answers to client. Also send the image for this question.
             _this.players.current().emit('question', {
                 question: questionObject[1],
                 answers: questionObject[2],
@@ -149,11 +149,11 @@ module.exports = function (io, sockets) {
 
     // Gets a random question with the appropriate answers from database.
     this.getQuestion = function (difficulty) {
-        var category = _this.game.getCategory();
-        var language = _this.players.current().lang;
+        var gameCategory = _this.game.getCategory();
+        var userLanguage = _this.players.current().lang;
 
         // TODO: Testing this call.
-        return _this.question.getQuestionWithAnswers(category, difficulty, language).then(function (result) {
+        return _this.question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then(function (result) {
             console.log("Result from database call: " + result);
         });
     };
