@@ -3,13 +3,6 @@ global.ROOM_COUNT = 0;
 global.VALIDATOR = require('./functions/validator/dataChecker');
 global.RANDOM_NUMBER = require('./functions/randomNumber');
 
-var test = VALIDATOR.isStringHarmless("Manuel&");
-var test2 = VALIDATOR.isStringHarmless("Manuel");
-var test3 = VALIDATOR.isStringHarmless("Mike42");
-console.log(test);
-console.log(test2);
-console.log(test3);
-
 const Database = require('./class/database'),
     Controller = require('./class/controller');
 

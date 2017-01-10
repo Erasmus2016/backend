@@ -12,14 +12,14 @@ class Database {
 
         // Set up pooled database connection.
         this.pool = mysql.createPool({
-            connectionLimit: 100,                  // The amount of maximum connections. Important!
+            connectionLimit : 100,                  // The amount of maximum connections. Important!
             host            : this.config.host,
             user            : this.config.user,
             password        : this.config.pass,
             database        : this.config.db,
             charset         : 'utf8_general_ci',    // Default charset.
-            port: 3306,                 // Default mySQL port.
-            debug: false
+            port            : 3306,                 // Default mySQL port.
+            debug           : false
         });
 
         initCallback(this);

@@ -2,7 +2,9 @@
  * Created by Manuel on 29.11.2016.
  */
 
-var regex = /^[\wäöüßáčďéěíňóřšťúůýž]+$/ig;
+// Regular expression for user input validation (XSS).
+// Allowed characters: A-Z a-z 0-9 _ and German and Czech special characters.
+var regex = /^[\wäöüßáčďéěíňóřšťúůýž]+$/i;
 
 // Gets and checks an input data objects and returns a checked version.
 function checkData(data) {
@@ -16,7 +18,7 @@ function checkData(data) {
     return data;
 }
 
-// Returns the checked color value.
+// Returns the checked color value or otherwise false.
 function checkColor(color) {
 
     if(!isStringHarmless(color)) {
@@ -25,19 +27,16 @@ function checkColor(color) {
 
     switch (color) {
         case "green":
-            return "green";
         case "red":
-            return "red";
         case "blue":
-            return "blue";
         case "yellow":
-            return "yellow";
+            return color;
         default:
             return false;
     }
 }
 
-// Returns the checked language value.
+// Returns the checked language value or 'en' as a default value.
 function checkLanguage(language) {
 
     if(!isStringHarmless(language)) {
@@ -46,11 +45,9 @@ function checkLanguage(language) {
 
     switch (language) {
         case "en":
-            return "en";
         case "de":
-            return "de";
         case "cz":
-            return "cz";
+            return language;
         default:
             return "en";
     }
@@ -91,6 +88,7 @@ function isLanguageValid(language) {
     }
 }
 
+// Returns true, if the category name is valid.
 function isCategoryValid(category) {
     if (!isStringHarmless(category)) {
         throw "Category value is potential dangerous.";
@@ -101,7 +99,7 @@ function isCategoryValid(category) {
 // Checks if an input string is harmless.
 // Returns true if string is harmless - otherwise false.
 function isStringHarmless (input) {
-    return regex.test(input);
+     return regex.test(input);
 }
 
 module.exports = {
