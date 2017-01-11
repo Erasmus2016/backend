@@ -51,7 +51,7 @@ module.exports = function (io, sockets) {
 
         console.log(data);
         if (!VALIDATOR.isColorValid(data.color) || !VALIDATOR.isLanguageValid(data.lang)
-            || !VALIDATOR.isCategoryValid(data.category) || VALIDATOR.isStringHarmless(data.name)) {
+            || !VALIDATOR.isCategoryValid(data.category) || !VALIDATOR.isStringHarmless(data.name)) {
             throw "Invalid data (color, category, name or language) from client.";
         }
 
