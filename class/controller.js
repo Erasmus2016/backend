@@ -23,7 +23,6 @@ module.exports = function (io, sockets) {
             callback(this[i], i, this);
     };
 
-
     this.players.currentI = 0;
     this.room_name = 'ROOM_' + (++ROOM_COUNT);
     this.room = io.sockets.in(this.room_name);
@@ -63,13 +62,19 @@ module.exports = function (io, sockets) {
         // Check if player color is still available.
         if (_this.game.isColorAvailable(data.color)) {
             player.color = data.color;
-            _this.players.forEach(function (player) {
-                player.emit('available-colors', _this.game.getAllAvailableColors());
-            });
+
+            this.sendAvailableColorsToAllClients();
             player.isReady = true;
             _this.checkReady();
         }
     });
+
+    // Sends all available colors to all players (clients).
+    this.sendAvailableColorsToAllClients = function () {
+        _this.players.forEach(function (player) {
+            player.emit('available-colors', _this.game.getAllAvailableColors());
+        });
+    };
 
     // Checks if all players within a game are ready.
     // If so, send all players the game field (map) and trigger first game round.
