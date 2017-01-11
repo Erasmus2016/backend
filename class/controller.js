@@ -63,7 +63,7 @@ module.exports = function (io, sockets) {
         if (_this.game.isColorAvailable(data.color)) {
             player.color = data.color;
 
-            this.sendAvailableColorsToAllClients();
+            _this.sendAvailableColorsToAllClients();
             player.isReady = true;
             _this.checkReady();
         }
