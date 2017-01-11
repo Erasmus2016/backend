@@ -75,7 +75,7 @@ module.exports = function (io, sockets) {
     // If so, send all players the game field (map) and trigger first game round.
     this.checkReady = function () {
         for (let i = 0; i < _this.players.length; i++) {
-            if (!this.players[i].isReady)
+            if (!_this.players[i].isReady)
                 return false;
         }
 
