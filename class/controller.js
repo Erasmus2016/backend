@@ -72,6 +72,7 @@ module.exports = function (io, sockets) {
     // Sends all available colors to all players (clients).
     this.sendAvailableColorsToAllClients = function () {
         _this.players.forEach(function (player) {
+            player.emit('room'), _this.room_name;
             player.emit('available-colors', _this.game.getAllAvailableColors());
         });
     };
