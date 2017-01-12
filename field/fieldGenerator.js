@@ -8,7 +8,7 @@ var standard = "default";
 var question = "question";
 var jump = "jump";
 
-var randomNumber = require('../../functions/randomNumber');
+var randomNumber = require('../functions/randomNumber');
 
 function drawFieldToString(field) {//TODO: create utils.js and move methods like this there
     if (field.length == 0) return "fieldLen=0, minX=NaN, maxX=NaN, minY=NaN, maxY=NaN";

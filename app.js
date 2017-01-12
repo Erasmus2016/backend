@@ -1,6 +1,6 @@
 global.APPLICATION_PATH = __dirname;
 global.ROOM_COUNT = 0;
-global.VALIDATOR = require('./functions/validator/dataChecker');
+global.VALIDATOR = require('./functions/validator');
 global.RANDOM_NUMBER = require('./functions/randomNumber');
 
 const Database = require('./class/database'),
