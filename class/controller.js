@@ -14,13 +14,13 @@ class Controller extends EventEmitter {
     constructor(io, id, db) {
         super();
 
-        this.id = id;
-        this.io = io;
+        this._id = id;
+        this._io = io;
         this.game = new Game();
-        this.question = new Question(db);
+        this._question = new Question(db);
         this.players = new PlayerList();
-        this.room_name = 'ROOM_' + this.id;
-        this.room = this.io.sockets.in(this.room_name);
+        this.room_name = 'ROOM_' + this._id;
+        this.room = this._io.sockets.in(this.room_name);
 
         log('new room (' + this.room_name + ')', 'green');
 
@@ -64,7 +64,7 @@ class Controller extends EventEmitter {
     }
 
     broadcast(event, data) {
-        this.io.sockets.in(this.room_name).emit(event, data);
+        this._io.sockets.in(this.room_name).emit(event, data);
     }
 
     // Sends all available colors to all players (clients).
@@ -159,7 +159,7 @@ class Controller extends EventEmitter {
         const userLanguage = this.players.current().lang;
 
         // TODO: Testing this call.
-        return this.question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
+        return this._question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
             console.log("Result from database call: " + result);
         });
     }
@@ -219,7 +219,7 @@ class Controller extends EventEmitter {
     }
 
     getId() {
-        return this.id;
+        return this._id;
     }
 
 }

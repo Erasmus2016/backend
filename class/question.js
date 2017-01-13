@@ -85,7 +85,7 @@ class Question {
 
 
     // Returns the question difficulty as an integer.
-    getDifficulty(difficulty) {
+    static getDifficulty(difficulty) {
         switch (difficulty) {
             case "easy":
                 return 1;
@@ -99,7 +99,7 @@ class Question {
     };
 
     // Returns the language id as an integer.
-    getLanguageId(language) {
+    static getLanguageId(language) {
         switch (language) {
             case "German":
                 return 1;
