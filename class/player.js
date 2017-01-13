@@ -8,7 +8,26 @@ class Player {
         this.socketId = socket.id;
         this.name = null;
         this.color = null;
-        this.lang = 'en';
+
+        try {
+            if (!socket.handshake.headers.hasOwnProperty('accept-language'))
+                throw 'accept-language not defined... use default';
+
+            switch (socket.handshake.headers['accept-language'].substr(0, 2).toLowerCase()) {
+                case 'de':
+                    this.lang = 'de';
+                    break;
+                case 'cz':
+                    this.lang = 'cz';
+                    break;
+                case 'en':
+                default:
+                    this.lang = 'en';
+            }
+        } catch (e) {
+            this.lang = 'en';
+        }
+
         this.position = 0;
     };
 

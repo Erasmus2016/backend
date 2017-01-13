@@ -12,14 +12,14 @@ class Database {
 
         // Set up pooled database connection.
         this.pool = mysql.createPool({
-            connectionLimit : 100,                  // The amount of maximum connections. Important!
-            host            : this.config.host,
-            user            : this.config.user,
-            password        : this.config.pass,
-            database        : this.config.db,
-            charset         : 'utf8_general_ci',    // Default charset.
-            port            : 3306,                 // Default mySQL port.
-            debug           : false
+            connectionLimit: 100,                  // The amount of maximum connections. Important!
+            host: this.config.host,
+            user: this.config.user,
+            password: this.config.pass,
+            database: this.config.db,
+            charset: 'utf8_general_ci',    // Default charset.
+            port: 3306,                 // Default mySQL port.
+            debug: false
         });
 
         initCallback(this);
@@ -28,13 +28,11 @@ class Database {
     // Query database and return result as a promise.
     // Database connection will automatically invoked, queried and released back to the pool.
     query(sql, values = []) {
-        const _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.pool.query(sql, values, function (error, result, fields) {
+        return new Promise((resolve, reject) => {
+            this.pool.query(sql, values, (error, result, fields) => {
                 if (error) {
                     reject(error);
                 }
-
                 resolve(result, fields);
             });
         });

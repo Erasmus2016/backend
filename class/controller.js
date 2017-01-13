@@ -2,17 +2,18 @@
 
 const Game = require(APPLICATION_PATH + '/class/game'),
     Player = require(APPLICATION_PATH + '/class/player'),
-    Question = require(APPLICATION_PATH + '/class/question');
+    Question = require(APPLICATION_PATH + '/class/question'),
+    Validator = require('../functions/validator'),
+    RandomNumber = require('../functions/randomNumber');
 
 module.exports = function (io, sockets) {
-    let _this = this;
     this.players = [];
     this.game = new Game();
     this.question = new Question();
 
     this.players.next = function () {
         if (this.currentI + 1 == this.length)
-            return this[0];
+            return this[this.currentI = 0];
         return this[++this.currentI];
     };
     this.players.current = function () {
@@ -27,18 +28,20 @@ module.exports = function (io, sockets) {
     this.room_name = 'ROOM_' + (++ROOM_COUNT);
     this.room = io.sockets.in(this.room_name);
 
-    sockets.forEach(function (socket) {
-        _this.players.push(new Player(socket));
-        socket.join(_this.room_name);
+    sockets.forEach((socket) => {
+        this.players.push(new Player(socket));
+        socket.join(this.room_name);
     });
 
     console.log('new room (' + this.room_name + ')');
 
     this.room.emit('login');
-
-    this.on = function (event, callback) {
-        this.players.forEach(function (player) {
-            player.getSocket().on(event, function (data) {
+    this.broadcast = (event, data) => {
+        io.sockets.in(this.room_name).emit(event, data);
+    };
+    this.on = (event, callback) => {
+        this.players.forEach((player) => {
+            player.getSocket().on(event, (data) => {
                 callback(data, player);
             });
         });
@@ -46,87 +49,77 @@ module.exports = function (io, sockets) {
 
     // Will be triggered on login action.
     // Map user (player) input to player object.
-    this.on('login', function (data, player) {
+    this.on('login', (data, player) => {
 
         console.log(data);
-        if (!VALIDATOR.isColorValid(data.color) || !VALIDATOR.isLanguageValid(data.lang)
-            || !VALIDATOR.isCategoryValid(data.category) || !VALIDATOR.isStringHarmless(data.name)) {
+        //todo remove language validator
+        if (!Validator.isColorValid(data.color) || !Validator.isLanguageValid(data.lang)
+            || !Validator.isCategoryValid(data.category) || !Validator.isStringHarmless(data.name)) {
             throw "Invalid data (color, category, name or language) from client.";
         }
 
         player.lang = data.lang;
         player.name = data.name;
         // TODO: Logic bug: The last player changes the category for all players in this game.
-        _this.game.setCategory(data.category);
+        this.game.setCategory(data.category);
 
         // Check if player color is still available.
-        if (_this.game.isColorAvailable(data.color)) {
+        if (this.game.isColorAvailable(data.color)) {
             player.color = data.color;
 
-            _this.sendAvailableColorsToAllClients();
+            this.sendAvailableColorsToAllClients();
             player.isReady = true;
-            _this.checkReady();
+            this.checkReady();
         }
     });
 
     // Sends all available colors to all players (clients).
-    this.sendAvailableColorsToAllClients = function () {
-        _this.players.forEach(function (player) {
-            player.emit('room', _this.room_name);
-            player.emit('available-colors', _this.game.getAllAvailableColors());
-        });
+    this.sendAvailableColorsToAllClients = () => {
+        this.broadcast('room', this.room_name);
+        this.broadcast('available-colors', this.game.getAllAvailableColors());
     };
 
     // Checks if all players within a game are ready.
     // If so, send all players the game field (map) and trigger first game round.
-    this.checkReady = function () {
-        for (let i = 0; i < _this.players.length; i++) {
-            if (!_this.players[i].isReady)
+    this.checkReady = () => {
+        for (let i = 0; i < this.players.length; i++) {
+            if (!this.players[i].isReady)
                 return false;
         }
 
-        _this.players.forEach(function (player) {
-            player.emit('map', _this.game.getField());
-        });
+        this.broadcast('map', this.game.getField());
 
-        console.log('game start (' + _this.room_name + ')');
-        _this.gameRound();
+        console.log('game start (' + this.room_name + ')');
+        this.gameRound();
     };
 
     // The current player will be notified to role the dice.
-    this.gameRound = function () {
+    this.gameRound = () => {
         this.players.current().emit('roll-the-dice');
-    };
 
-    // Handles the dice role action.
-    this.on('roll-the-dice', function (data, player) {
-        console.log(player.getId());
-        console.log(_this.players.current().getId());
-        if (player.getId() == _this.players.current().getId()) {
-            // Get a random dice value and send it to the player.
-            var dice = RANDOM_NUMBER.getRandomDiceValue();
-            console.log(dice);
-            player.emit('dice-result', dice);
-            _this.process(dice);
-        }
-    });
-
-    // Handles the end of game action. Sends the id of the winner player.
-    this.gameOver = function () {
-        _this.players.forEach(function (player) {
-            player.emit('game-over', _this.players.current().getId());
+        // Handles the dice role action.
+        this.players.current().getSocket().once('roll-the-dice', () => {
+            const dice = RandomNumber.getRandomDiceValue();
+            this.players.current().getSocket().emit('dice-result', dice);
+            this.process(dice);
         });
     };
 
+
+    // Handles the end of game action. Sends the id of the winner player.
+    this.gameOver = () => {
+        this.broadcast('game-over', this.players.current().getId());
+    };
+
     // Handles the question logic.
-    this.handleQuestion = function (resolve, reject) {
+    this.handleQuestion = (resolve, reject) => {
 
         // TODO: TEST
-        var difficulty;
+        let difficulty;
 
         //TODO: Check: Get difficulty from frontend.
         // Get player difficulty value for a question.
-        _this.players.current().once('set-difficulty', function (data) {
+        this.players.current().once('set-difficulty', (data) => {
 
             if (data.isNumber && (data == 1 || data == 3 || data == 5)) {
                 difficulty = data;
@@ -136,95 +129,93 @@ module.exports = function (io, sockets) {
             }
 
             // Get a question with its appropriate answers from database.
-            var questionObject = _this.getQuestion(difficulty);
-            var correctAnswerId = questionObject[0].correctAnswer;
+            let questionObject = this.getQuestion(difficulty);
+            let correctAnswerId = questionObject[0].correctAnswer;
 
             // Send question and answers to client. Also send the image for this question.
-            _this.players.current().emit('question', {
+            this.players.current().emit('question', {
                 question: questionObject[1],
                 answers: questionObject[2],
                 questionImage: questionObject[0].img
             });
 
             // Get and process question answer from client.
-            _this.players.current().once('answer', function (answerId) {
+            this.players.current().once('answer', (answerId) => {
 
                 // Check for correct answer and move player appropriate.
                 if (answerId.isNumber && answerId === correctAnswerId) {
-                    _this.players.current().addPosition(difficulty);
+                    this.players.current().addPosition(difficulty);
                 } else {
-                    _this.players.current().subPosition(difficulty);
+                    this.players.current().subPosition(difficulty);
                 }
                 resolve();
             });
         });
 
         // No answer is a wrong answer.
-        setTimeout(function () {
-            _this.players.current().subPosition(difficulty);
+        setTimeout(() => {
+            this.players.current().subPosition(difficulty);
             resolve();
         }, 20000);  // 20 seconds.
     };
 
     // Gets a random question with the appropriate answers from database.
-    this.getQuestion = function (difficulty) {
-        var gameCategory = _this.game.getCategory();
-        var userLanguage = _this.players.current().lang;
+    this.getQuestion = (difficulty) => {
+        const gameCategory = this.game.getCategory();
+        const userLanguage = this.players.current().lang;
 
         // TODO: Testing this call.
-        return _this.question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then(function (result) {
+        return this.question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
             console.log("Result from database call: " + result);
         });
     };
 
     // Moves the player to a new position on the playing field (map).
-    this.process = function (dice) {
-        var pos = this.players.current().addPosition(dice);
+    this.process = (dice) => {
+        let pos = this.players.current().addPosition(dice);
 
         // Check if the player has finished the game.
-        if (_this.game.getField().length > pos - 1) {
-            _this.gameOver();
+        if (this.game.getField().length < pos - 1) {
+            this.gameOver();
             return;
             // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
-            _this.players.current().setPosition(0);
+            this.players.current().setPosition(0);
         }
 
-        var step = _this.game.getField()[pos];
+        let step = this.game.getField()[pos];
 
         // Check the new position of the player and deals with special fields.
-        var promise = new Promise(function (resolve, reject) {
+        const promise = new Promise((resolve, reject) => {
             switch (step.type) {
                 case 'default':
                     resolve();
                     break;
                 case 'question':
-                    _this.handleQuestion(resolve, reject);
+                    this.handleQuestion(resolve, reject);
                     break;
                 case 'jump':
-                    _this.players.current().setPosition(step.jumpDestinationId);
+                    this.players.current().setPosition(step.jumpDestinationId);
                     resolve();
                     break;
                 default:
-                    throw 'unknown field type';
+                    reject('unknown field type');
             }
         });
 
         // Notify all players with the new position of all players.
-        promise.then(function () {
-            var positions = [];
-            _this.players.forEach(function (player) {
+        promise.then(() => {
+            const positions = [];
+            this.players.forEach((player) => {
                 positions[player.getId()] = player.getPosition();
             });
-            _this.players.forEach(function (player) {
-                player.emit('player-position', positions);
-            });
+            this.broadcast('player-position', positions);
 
             // It's the next players turn.
-            _this.players.next();
-            _this.gameRound();
-        }).error(function () {
+            this.players.next();
+            this.gameRound();
+        }).catch(() => {
             throw 'unknown error';
         });
     };
