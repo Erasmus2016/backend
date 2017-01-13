@@ -27,7 +27,7 @@ class Game {
     // Returns true, if the color is still available - otherwise false.
     // Logic: Removes the checked color from array due to the fact, that every player has to have an unique color.
     isColorAvailable(color) {
-        var index = this.availableColors.indexOf(color);
+        const index = this.availableColors.indexOf(color);
 
         if (index !== -1) {
             this.availableColors.splice(index, 1);

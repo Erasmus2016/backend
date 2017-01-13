@@ -4,13 +4,13 @@
 
 // Regular expression for user input validation (XSS).
 // Allowed characters: A-Z a-z 0-9 _ and German and Czech special characters.
-var regex = /^[\wäöüßáčďéěíňóřšťúůýž]+$/i;
+const regex = /^[\wäöüßáčďéěíňóřšťúůýž]+$/i;
 
 // Gets and checks an input data objects and returns a checked version.
 function checkData(data) {
 
-    var checkedColor = checkColor(data.Color);
-    var checkedLanguage = checkLanguage(data.Language);
+    const checkedColor = checkColor(data.Color);
+    const checkedLanguage = checkLanguage(data.Language);
 
     data.Color = checkedColor;
     data.Language = checkedLanguage;

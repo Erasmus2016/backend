@@ -6,10 +6,9 @@ class Player {
         this.name = null;
         this.color = null;
 
-        try {
-            if (!socket.handshake.headers.hasOwnProperty('accept-language'))
-                throw 'accept-language not defined... use default';
-
+        if (!socket.handshake.headers.hasOwnProperty('accept-language'))
+            this.lang = 'en';
+        else {
             switch (socket.handshake.headers['accept-language'].substr(0, 2).toLowerCase()) {
                 case 'de':
                     this.lang = 'de';
@@ -21,10 +20,7 @@ class Player {
                 default:
                     this.lang = 'en';
             }
-        } catch (e) {
-            this.lang = 'en';
         }
-
         this.position = 0;
     };
 

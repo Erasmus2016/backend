@@ -1,4 +1,4 @@
-var map = [ { id: 0, x: 0, y: 6, type: 'default' },
+const map = [ { id: 0, x: 0, y: 6, type: 'default' },
      { id: 1, x: 1, y: 6, type: 'default' },
      { id: 2, x: 1, y: 5, type: 'default' },
      { id: 3, x: 1, y: 4, type: 'question' },

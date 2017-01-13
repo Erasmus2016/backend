@@ -14,7 +14,7 @@ function getRandomNumber(min, max) {
 }
 
 function getRandomInteger(min, max) {
-    var result = Math.floor(getRandomNumber(min, max));
+    let result = Math.floor(getRandomNumber(min, max));
 
     // We don't need this, but better save than sorry.
     if (result >= max) {
