@@ -39,9 +39,8 @@ class Controller extends EventEmitter {
 
             // Set socket events.
             player.getSocket().on('login', (data) => {
-                //todo remove language validator
-                if (!Validator.isColorValid(data.color)
-                    || !Validator.isCategoryValid(data.category) || !Validator.isStringHarmless(data.name)) {
+
+                if (!Validator.isColorValid(data.color) || !Validator.isCategoryValid(data.category) || !Validator.isStringHarmless(data.name)) {
                     throw "Invalid data (color, category or name) from client.";
                 }
 

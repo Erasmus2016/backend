@@ -31,18 +31,19 @@ This project is using the mysql npm package for this database tasks.
 
 ```
 .
-+-- app.js // Point of entry
-+-- map.js  // A dummy map for testing purpose
++-- app.js
 +-- class
 |   +-- controller.js
 |   +-- database.js
 |   +-- game.js
 |   +-- player.js
+|   +-- playerList.js
 |   +-- question.js
 +-- config
 +-- field
 |   +-- fieldGenerator.js
 +-- functions
+|   +-- index.js
 |   +-- randomNumber.js
 |   +-- validator.js
 ```
@@ -63,6 +64,8 @@ _game.js_ - This class stores the current game round including the playing field
 
 _player.js_ - This class represents a player object with its properties.
 
+_playerList.js_ - This class represents a collection for all connected players for a game.
+
 _question.js_ - This class handles the questions and answers requests.
 
 **config**-Folder:
@@ -74,6 +77,8 @@ Stores config files (e.g. for the database connection) as json files.
 _fieldGenerator.js_ - This file generates a random playing field.
 
 **functions**-Folder:
+
+_index.js_ - Contains some helper functions like a guid generator or an improved logging functionality. 
 
 _randomNumber.js_ - Generates the dice results for the board game.
 
