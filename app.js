@@ -18,10 +18,13 @@ new Database((db) => {
     const clients = [],
         instances = {};
 
+    // Client connects
     io.on('connection', (socket) => {
         log('new client (' + socket.handshake.headers['x-forwarded-for'] + '[' + socket.id + '])');
+        // Add socket to client queue
         clients.push(socket);
         if (clients.length > 1) {
+            // Create new controller instance and add 2 clients
             const controller = new Controller(io, guid(), db);
             controller.addPlayer(clients.shift(), clients.shift());
             instances[controller.getId()] = controller;
