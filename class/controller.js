@@ -1,100 +1,96 @@
 //TODO: set category on game class on game init.
 
-const Game = require(APPLICATION_PATH + '/class/game'),
+const EventEmitter = require('events'),
+    Game = require(APPLICATION_PATH + '/class/game'),
     Player = require(APPLICATION_PATH + '/class/player'),
     Question = require(APPLICATION_PATH + '/class/question'),
     Validator = require('../functions/validator'),
-    RandomNumber = require('../functions/randomNumber');
+    RandomNumber = require('../functions/randomNumber'),
+    {log} = require('../functions/functions'),
+    PlayerList = require('./playerList');
 
-module.exports = function (io, sockets) {
-    this.players = [];
-    this.game = new Game();
-    this.question = new Question();
 
-    this.players.next = function () {
-        if (this.currentI + 1 == this.length)
-            return this[this.currentI = 0];
-        return this[++this.currentI];
-    };
-    this.players.current = function () {
-        return this[this.currentI];
-    };
-    this.players.forEach = function (callback) {
-        for (let i = 0; i < this.length; i++)
-            callback(this[i], i, this);
-    };
+class Controller extends EventEmitter {
+    constructor(io, id) {
+        super();
 
-    this.players.currentI = 0;
-    this.room_name = 'ROOM_' + (++ROOM_COUNT);
-    this.room = io.sockets.in(this.room_name);
+        this.id = id;
+        this.io = io;
+        this.game = new Game();
+        this.question = new Question();
+        this.players = new PlayerList();
+        this.room_name = 'ROOM_' + this.id;
+        this.room = this.io.sockets.in(this.room_name);
 
-    sockets.forEach((socket) => {
-        this.players.push(new Player(socket));
-        socket.join(this.room_name);
-    });
+        log('new room (' + this.room_name + ')', 'green');
 
-    console.log('new room (' + this.room_name + ')');
+        this.room.emit('login');
+    }
 
-    this.room.emit('login');
-    this.broadcast = (event, data) => {
-        io.sockets.in(this.room_name).emit(event, data);
-    };
-    this.on = (event, callback) => {
-        this.players.forEach((player) => {
-            player.getSocket().on(event, (data) => {
-                callback(data, player);
+    addPlayer() {
+        for (let key in arguments) {
+            if (!arguments.hasOwnProperty(key))
+                continue;
+
+            let player = new Player(arguments[key]);
+            player.getSocket().join(this.room_name);
+            this.players.add(player);
+
+            //set socket events
+            player.getSocket().on('login', (data) => {
+                //todo remove language validator
+                if (!Validator.isColorValid(data.color)
+                    || !Validator.isCategoryValid(data.category) || !Validator.isStringHarmless(data.name)) {
+                    throw "Invalid data (color, category or name) from client.";
+                }
+
+                player.lang = data.lang;
+                player.name = data.name;
+                // TODO: Logic bug: The last player changes the category for all players in this game.
+                this.game.setCategory(data.category);
+
+                // Check if player color is still available.
+                if (this.game.isColorAvailable(data.color)) {
+                    player.color = data.color;
+
+                    this.sendAvailableColorsToAllClients();
+                    player.isReady = true;
+                    this.checkReady();
+                }
+            }).on('disconnect', () => {
+                this.players.remove(player.getId());
+                this.emit('disconnect');
             });
-        });
-    };
-
-    // Will be triggered on login action.
-    // Map user (player) input to player object.
-    this.on('login', (data, player) => {
-
-        console.log(data);
-        //todo remove language validator
-        if (!Validator.isColorValid(data.color) || !Validator.isLanguageValid(data.lang)
-            || !Validator.isCategoryValid(data.category) || !Validator.isStringHarmless(data.name)) {
-            throw "Invalid data (color, category, name or language) from client.";
         }
+    }
 
-        player.lang = data.lang;
-        player.name = data.name;
-        // TODO: Logic bug: The last player changes the category for all players in this game.
-        this.game.setCategory(data.category);
-
-        // Check if player color is still available.
-        if (this.game.isColorAvailable(data.color)) {
-            player.color = data.color;
-
-            this.sendAvailableColorsToAllClients();
-            player.isReady = true;
-            this.checkReady();
-        }
-    });
+    broadcast(event, data) {
+        this.io.sockets.in(this.room_name).emit(event, data);
+    }
 
     // Sends all available colors to all players (clients).
-    this.sendAvailableColorsToAllClients = () => {
+    sendAvailableColorsToAllClients() {
         this.broadcast('room', this.room_name);
         this.broadcast('available-colors', this.game.getAllAvailableColors());
-    };
+    }
 
     // Checks if all players within a game are ready.
     // If so, send all players the game field (map) and trigger first game round.
-    this.checkReady = () => {
-        for (let i = 0; i < this.players.length; i++) {
-            if (!this.players[i].isReady)
+    checkReady() {
+        for (let i = 0; i < this.players.size(); i++) {
+            if (!this.players.index(i).isReady)
                 return false;
         }
 
         this.broadcast('map', this.game.getField());
 
-        console.log('game start (' + this.room_name + ')');
+        log('game start (' + this.room_name + ')');
         this.gameRound();
-    };
+    }
+
 
     // The current player will be notified to role the dice.
-    this.gameRound = () => {
+    gameRound() {
         this.players.current().emit('roll-the-dice');
 
         // Handles the dice role action.
@@ -103,16 +99,15 @@ module.exports = function (io, sockets) {
             this.players.current().getSocket().emit('dice-result', dice);
             this.process(dice);
         });
-    };
-
+    }
 
     // Handles the end of game action. Sends the id of the winner player.
-    this.gameOver = () => {
+    gameOver() {
         this.broadcast('game-over', this.players.current().getId());
-    };
+    }
 
     // Handles the question logic.
-    this.handleQuestion = (resolve, reject) => {
+    handleQuestion(resolve, reject) {
 
         // TODO: TEST
         let difficulty;
@@ -157,10 +152,10 @@ module.exports = function (io, sockets) {
             this.players.current().subPosition(difficulty);
             resolve();
         }, 20000);  // 20 seconds.
-    };
+    }
 
     // Gets a random question with the appropriate answers from database.
-    this.getQuestion = (difficulty) => {
+    getQuestion(difficulty) {
         const gameCategory = this.game.getCategory();
         const userLanguage = this.players.current().lang;
 
@@ -168,10 +163,10 @@ module.exports = function (io, sockets) {
         return this.question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
             console.log("Result from database call: " + result);
         });
-    };
+    }
 
     // Moves the player to a new position on the playing field (map).
-    this.process = (dice) => {
+    process(dice) {
         let pos = this.players.current().addPosition(dice);
 
         // Check if the player has finished the game.
@@ -190,11 +185,13 @@ module.exports = function (io, sockets) {
         const promise = new Promise((resolve, reject) => {
             switch (step.type) {
                 case 'default':
+                case 'question':
                     resolve();
                     break;
-                case 'question':
-                    this.handleQuestion(resolve, reject);
-                    break;
+                //todo question fields frontend
+                /*case 'question':
+                 this.handleQuestion(resolve, reject);
+                 break;*/
                 case 'jump':
                     this.players.current().setPosition(step.jumpDestinationId);
                     resolve();
@@ -207,9 +204,11 @@ module.exports = function (io, sockets) {
         // Notify all players with the new position of all players.
         promise.then(() => {
             const positions = [];
-            this.players.forEach((player) => {
+
+            this.players.each((player) => {
                 positions[player.getId()] = player.getPosition();
             });
+
             this.broadcast('player-position', positions);
 
             // It's the next players turn.
@@ -218,6 +217,12 @@ module.exports = function (io, sockets) {
         }).catch(() => {
             throw 'unknown error';
         });
-    };
+    }
 
-};
+    getId() {
+        return this.id;
+    }
+
+}
+
+module.exports = Controller;
