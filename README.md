@@ -2,6 +2,10 @@
 
 [![Join the chat at https://gitter.im/Erasmus2016/backend](https://badges.gitter.im/Erasmus2016/backend.svg)](https://gitter.im/Erasmus2016/backend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## Project's website
+
+www.barmania.eu
+
 ## Project description
 
 This little project targets primary the international collaboration between German and Czech students.
@@ -24,8 +28,6 @@ The backend is developed with Node.js @ ECMAScript6.
 
 The questions are stored in a mySQL database.
 This project is using the mysql npm package for this database tasks.
-
-
 
 ```
 .
