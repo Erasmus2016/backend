@@ -1,7 +1,7 @@
 {
   "name": "barmania-backend",
   "version": "1.0.0",
-  "description": "[![Join the chat at https://gitter.im/Erasmus2016/backend](https://badges.gitter.im/Erasmus2016/backend.svg)](https://gitter.im/Erasmus2016/backend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) Backend",
+  "description": "Barmania Backend",
   "main": "app.js",
   "directories": {
     "test": "test"
@@ -20,10 +20,10 @@
     "type": "git",
     "url": "git+https://github.com/Erasmus2016/backend.git"
   },
-  "author": "",
+  "author": "Erasmus2016",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Erasmus2016/backend/issues"
   },
-  "homepage": "https://github.com/Erasmus2016/backend#readme"
+  "homepage": "https://barmania.eu/"
 }
