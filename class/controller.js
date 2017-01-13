@@ -100,10 +100,12 @@ module.exports = function (io, sockets) {
 
     // Handles the dice role action.
     this.on('roll-the-dice', function (data, player) {
-        console.log(player);
-        if (player.getId() == _this.players.current().id) {
+        console.log(player.getId());
+        console.log(_this.players.current().getId());
+        if (player.getId() == _this.players.current().getId()) {
             // Get a random dice value and send it to the player.
             var dice = RANDOM_NUMBER.getRandomDiceValue();
+            console.log(dice);
             player.emit('dice-result', dice);
             _this.process(dice);
         }
@@ -183,7 +185,7 @@ module.exports = function (io, sockets) {
         if (_this.game.getField().length > pos - 1) {
             _this.gameOver();
             return;
-        // Check if the player is behind the start field.
+            // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
             _this.players.current().setPosition(0);
