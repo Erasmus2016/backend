@@ -83,6 +83,10 @@ _validator.js_ - Validates all user input for obviously reasons.
 
 Stores all required npm packages for this app.
 
+## Architecture diagrams
+
+TODO: Add diagrams
+
 ## Communication between backend and frontend
 
 All communication between the backend and the frontend is done via socket.io.
@@ -209,7 +213,7 @@ This jump must be performed regardless of a forward or backward jump.
 
 When a player hits a question field the player has to answer a question.
 
-The player has the choice between three different kind of difficulties: Easy, medium and hard.
+The player has the choice between three different kind of question difficulties: Easy, medium and hard.
 
 All questions are multiple-choice questions with 4 different answers.
 The player can only choose one answer.
