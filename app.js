@@ -1,6 +1,6 @@
 const Database = require('./class/database'),
     Controller = require('./class/controller'),
-    {log, guid} = require('./functions/functions'),
+    {log, guid} = require('./functions'),
     app = require('express')(),
     server = require('http').Server(app),
     io = require('socket.io')(server);

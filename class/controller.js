@@ -6,7 +6,7 @@ const EventEmitter = require('events'),
     Question = require('./question'),
     Validator = require('../functions/validator'),
     RandomNumber = require('../functions/randomNumber'),
-    {log} = require('../functions/functions'),
+    {log} = require('../functions'),
     PlayerList = require('./playerList');
 
 
