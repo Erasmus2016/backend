@@ -27,6 +27,7 @@ class Controller extends EventEmitter {
         this.room.emit('login');
     }
 
+    // Adds a new player to the players list.
     addPlayer() {
         for (let key in arguments) {
             if (!arguments.hasOwnProperty(key))
@@ -36,7 +37,7 @@ class Controller extends EventEmitter {
             player.getSocket().join(this.room_name);
             this.players.add(player);
 
-            //set socket events
+            // Set socket events.
             player.getSocket().on('login', (data) => {
                 //todo remove language validator
                 if (!Validator.isColorValid(data.color)
@@ -45,7 +46,10 @@ class Controller extends EventEmitter {
                 }
 
                 player.setName(data.name);
-                // TODO: Logic bug: The last player changes the category for all players in this game.
+
+                // Only the first player can set the category. All following player can't change the category.
+                // TODO: Send all following players the category and notify them there are unable to change the category.
+                // TODO: Alternate check for the same category before adding a new player to a room. Only move players with the same category to the same room.
                 this.game.setCategory(data.category);
 
                 // Check if player color is still available.

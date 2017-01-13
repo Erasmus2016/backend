@@ -21,7 +21,9 @@ class Game {
     // Sets the category for this game.
     // TODO: What happens, if there is a game category change while playing?
     setCategory(category) {
-        this.category = category;
+        if (this.category === undefined) {
+            this.category = category;
+        }
     };
 
     // Returns true, if the color is still available - otherwise false.
