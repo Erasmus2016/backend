@@ -8,7 +8,7 @@ class Database {
     constructor(initCallback) {
 
         // Get database connection settings from config file.
-        this.config = require(APPLICATION_PATH + '/config/db.json');
+        this.config = require('../config/db.json');
 
         // Set up pooled database connection.
         this.pool = mysql.createPool({

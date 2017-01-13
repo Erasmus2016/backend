@@ -2,10 +2,7 @@ class Player {
 
     constructor(socket) {
         this.socket = socket;
-        this.isReady = false;
-
-        // TODO: Check if still necessary or direct usage of this.socket.id.
-        this.socketId = socket.id;
+        this.ready = false;
         this.name = null;
         this.color = null;
 
@@ -58,51 +55,51 @@ class Player {
 
     // Returns the socket id.
     getId() {
-        return this.socketId;
+        return this.socket.id;
     };
 
     // Returns whether the player is ready or not.
-    isPlayerReady() {
-        return this.isReady;
+    isReady() {
+        return this.ready;
     };
 
     // Sets the player ready.
-    setPlayerReady() {
-        this.isReady = true;
+    setReady() {
+        this.ready = true;
     };
 
     // Sets the player as not ready.
-    setPlayerNotReady() {
-        this.isReady = false;
+    setNotReady() {
+        this.ready = false;
     };
 
     // Returns the name of the player.
-    getPlayerName() {
+    getName() {
         return this.name;
     };
 
     // Sets the name for the player.
-    setPlayerName(name) {
+    setName(name) {
         this.name = name;
     };
 
     // Returns the color of the player.
-    getPlayerColor() {
+    getColor() {
         return this.color;
     };
 
     // Sets the color for the player.
-    setPlayerColor(color) {
+    setColor(color) {
         this.color = color;
     };
 
     // Returns the language of the player.
-    getPlayerLanguage() {
+    getLanguage() {
         return this.lang;
     };
 
     // Sets the language for the player.
-    setPlayerLanguage(language) {
+    setLanguage(language) {
         this.lang = language;
     };
 

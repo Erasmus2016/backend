@@ -1,5 +1,3 @@
-global.APPLICATION_PATH = __dirname;
-
 const Database = require('./class/database'),
     Controller = require('./class/controller'),
     {log, guid} = require('./functions/functions'),
@@ -8,7 +6,6 @@ const Database = require('./class/database'),
     io = require('socket.io')(server);
 
 new Database((db) => {
-    global.DB = db;
 
     // Allow CORS.
     app.use((req, res, next) => {
@@ -18,8 +15,6 @@ new Database((db) => {
         next();
     });
 
-    //io.set('origins', 'barmania.eu');
-
     const clients = [],
         instances = {};
 
@@ -27,7 +22,7 @@ new Database((db) => {
         log('new client (' + socket.handshake.headers['x-forwarded-for'] + '[' + socket.id + '])');
         clients.push(socket);
         if (clients.length > 1) {
-            const controller = new Controller(io, guid());
+            const controller = new Controller(io, guid(), db);
             controller.addPlayer(clients.shift(), clients.shift());
             instances[controller.getId()] = controller;
 

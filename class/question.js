@@ -4,7 +4,8 @@
 
 class Question {
 
-    constructor() {
+    constructor(db) {
+        this.db = db;
         this.usedQuestions = [];
     };
 
@@ -24,7 +25,7 @@ class Question {
             const sql1 = 'SELECT id FROM language ' +
                 'WHERE language = "' + language + '"';
 
-            return DB.query(sql1).then( (result)=> {
+            return this.db.query(sql1).then((result) => {
 
                 // console.log('LanguageId: ', result);
                 const languageId = result[0].id;
@@ -36,7 +37,7 @@ class Question {
                     'AND category = "' + category + '" ' +
                     'ORDER BY RAND() LIMIT 1';
 
-                return DB.query(sql2).then( (result)=> {
+                return this.db.query(sql2).then((result) => {
 
                     // console.log(result);
                     const question = result[0];
@@ -49,7 +50,7 @@ class Question {
                             'WHERE question_id = "' + question.short_code + '" ' +
                             'AND language_id = ' + languageId;
 
-                        return DB.query(sql3).then( (result)=> {
+                        return this.db.query(sql3).then((result) => {
 
                             // console.log(result);
                             const translatedQuestion = result[0].content;
@@ -59,7 +60,7 @@ class Question {
                                 'WHERE question_id = "' + question.short_code + '" ' +
                                 'AND language_id = ' + languageId;
 
-                            return DB.query(sql4).then( (result)=> {
+                            return this.db.query(sql4).then((result) => {
 
                                 // console.log(result);
                                 const translatedAnswers = result;
@@ -82,118 +83,6 @@ class Question {
         }
     };
 
-    // old one!
-    // Gets the question with the appropriate answers from database and returns it.
-    // Receives the category name, the difficulty name and the language name.
-    // Returns an array with 3 elements:
-    // 0. The question object - (will contain the correct answer).
-    // 1. The translated question as a string.
-    // 2. The translated answers as a string array.
-    // getQuestionWithAnswers(category, difficulty, language) {
-    //
-    //     try {
-    //         // Not sure if hack or just necessary...
-    //         var this = this;
-    //
-    //         // Query database and return the language id.
-    //         var sql1 = 'SELECT id FROM language ' +
-    //             'WHERE language = "' + language + '"';
-    //
-    //         this.db.executeQuery(sql1, function (error, result) {
-    //             if (error) {
-    //                 console.log(error);
-    //                 throw error;
-    //             }
-    //             else {
-    //                 console.log('LanguageId: ', result);
-    //                 var languageId = result[0].id;
-    //
-    //                 var difficultyInt = this.getDifficulty(difficulty);
-    //
-    //                 // Query database and return one random question.
-    //                 var sql2 = 'SELECT * FROM question ' +
-    //                     'WHERE difficulty = ' + difficultyInt + ' ' +
-    //                     'AND category = "' + category + '" ' +
-    //                     'ORDER BY RAND() LIMIT 1';
-    //
-    //                 this.db.executeQuery(sql2, function (error, result) {
-    //                     if (error) {
-    //                         console.log(error);
-    //                         throw error;
-    //                     }
-    //                     else {
-    //                         console.log(result);
-    //                         var question = result[0];
-    //
-    //                         var isNewQuestion = this.isNewQuestion(question.id);
-    //
-    //                         if (isNewQuestion) {
-    //
-    //                             // Query database and return the translated question.
-    //                             var sql3 = 'SELECT content FROM question_translation ' +
-    //                                 'WHERE question_id = "' + question.short_code + '" ' +
-    //                                 'AND language_id = ' + languageId;
-    //
-    //                             this.db.executeQuery(sql3, function (error, result) {
-    //                                 if (error) {
-    //                                     console.log(error);
-    //                                     throw error;
-    //                                 }
-    //                                 else {
-    //                                     console.log(result);
-    //                                     var translatedQuestion = result[0].content;
-    //
-    //                                     // Query database and return the translated answers.
-    //                                     var sql4 = 'SELECT content FROM answer_translation ' +
-    //                                         'WHERE question_id = "' + question.short_code + '" ' +
-    //                                         'AND language_id = ' + languageId;
-    //
-    //                                     this.db.executeQuery(sql4, function (error, result) {
-    //                                         if (error) {
-    //                                             console.log(error);
-    //                                             throw error;
-    //                                         }
-    //                                         else {
-    //                                             console.log(result);
-    //                                             var translatedAnswers = result;
-    //
-    //                                             //Not working yet...
-    //                                             return [question, translatedQuestion, translatedAnswers];
-    //                                         }
-    //                                     });
-    //                                 }
-    //                             });
-    //                         }
-    //                         else {
-    //                             // For understanding recursion you first have to understand recursion.
-    //                             this.getQuestionWithAnswers(category, difficulty, language);
-    //                         }
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //
-    //
-    //
-    //         // while (true) {
-    //         //     var question = this.getQuestion(category, difficulty);
-    //         //     var isNewQuestion = this.isNewQuestion(question.Id);
-    //         //
-    //         //     if (isNewQuestion) {
-    //         //         var translatedQuestion = this.getQuestionTranslation(question.short_code, languageId);
-    //         //         var translatedAnswers = this.getAnswersTranslation(question.short_code, languageId);
-    //         //
-    //         //         return [question, translatedQuestion, translatedAnswers];
-    //         //     }
-    //         // }
-    //     }
-    //     catch (ex) {
-    //         console.log(ex);
-    //     }
-    //     finally {
-    //         // this.connection.end();
-    //     }
-    // };
 
     // Returns the question difficulty as an integer.
     getDifficulty(difficulty) {
@@ -230,7 +119,7 @@ class Question {
         const sql = 'SELECT id FROM language ' +
             'WHERE language = ?';
 
-        this.connection.query(sql, [language],  (error, result) =>{
+        this.connection.query(sql, [language], (error, result) => {
             if (error) {
                 throw error;
             }
@@ -252,7 +141,7 @@ class Question {
             'AND category = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
-        this.connection.query(sql, difficultyInt, category,  (error, result) =>{
+        this.connection.query(sql, difficultyInt, category, (error, result) => {
             if (!error) {
                 console.log('Question: ', result);
                 return result;
@@ -289,7 +178,7 @@ class Question {
             'WHERE question_id = ? ' +
             'AND language_id = ??';
 
-        this.connection.query(sql, question_short_code, languageId,  (error, result) =>{
+        this.connection.query(sql, question_short_code, languageId, (error, result) => {
             if (!error) {
                 console.log('Translated question: ', result);
                 return result;
@@ -308,7 +197,7 @@ class Question {
             'WHERE question_id = ? ' +
             'AND language_id = ??';
 
-        this.connection.query(sql, question_short_code, languageId,  (error, result)=> {
+        this.connection.query(sql, question_short_code, languageId, (error, result) => {
             if (!error) {
                 console.log('Translated answers: ', result);
                 return result;

@@ -1,4 +1,4 @@
-const Field = require(APPLICATION_PATH + '/field/fieldGenerator');
+const Field = require('../field/fieldGenerator');
 
 class Game {
 

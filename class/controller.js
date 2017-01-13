@@ -1,9 +1,9 @@
 //TODO: set category on game class on game init.
 
 const EventEmitter = require('events'),
-    Game = require(APPLICATION_PATH + '/class/game'),
-    Player = require(APPLICATION_PATH + '/class/player'),
-    Question = require(APPLICATION_PATH + '/class/question'),
+    Game = require('./game'),
+    Player = require('./player'),
+    Question = require('./question'),
     Validator = require('../functions/validator'),
     RandomNumber = require('../functions/randomNumber'),
     {log} = require('../functions/functions'),
@@ -11,13 +11,13 @@ const EventEmitter = require('events'),
 
 
 class Controller extends EventEmitter {
-    constructor(io, id) {
+    constructor(io, id, db) {
         super();
 
         this.id = id;
         this.io = io;
         this.game = new Game();
-        this.question = new Question();
+        this.question = new Question(db);
         this.players = new PlayerList();
         this.room_name = 'ROOM_' + this.id;
         this.room = this.io.sockets.in(this.room_name);
@@ -44,17 +44,16 @@ class Controller extends EventEmitter {
                     throw "Invalid data (color, category or name) from client.";
                 }
 
-                player.lang = data.lang;
-                player.name = data.name;
+                player.setName(data.name);
                 // TODO: Logic bug: The last player changes the category for all players in this game.
                 this.game.setCategory(data.category);
 
                 // Check if player color is still available.
                 if (this.game.isColorAvailable(data.color)) {
-                    player.color = data.color;
+                    player.setColor(data.color);
 
                     this.sendAvailableColorsToAllClients();
-                    player.isReady = true;
+                    player.setReady();
                     this.checkReady();
                 }
             }).on('disconnect', () => {
@@ -78,7 +77,7 @@ class Controller extends EventEmitter {
     // If so, send all players the game field (map) and trigger first game round.
     checkReady() {
         for (let i = 0; i < this.players.size(); i++) {
-            if (!this.players.index(i).isReady)
+            if (!this.players.index(i).isReady())
                 return false;
         }
 
