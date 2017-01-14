@@ -85,10 +85,6 @@ _randomNumber.js_ - Generates the dice results for the board game.
 
 _validator.js_ - Validates all user input for obviously reasons.
 
-**node_modules**-Folder:
-
-Stores all required npm packages for this app.
-
 ## Architecture diagrams
 
 TODO: Add diagrams
