@@ -23,8 +23,6 @@ class Controller extends EventEmitter {
         this.room = this._io.sockets.in(this.room_name);
 
         log('new room (' + this.room_name + ')', 'green');
-
-        this.room.emit('login');
     }
 
     // Adds a new player to the players list.
@@ -64,6 +62,8 @@ class Controller extends EventEmitter {
                 this.emit('disconnect');
             });
         }
+
+        this.room.emit('login');
     }
 
     broadcast(event, data) {
@@ -175,7 +175,7 @@ class Controller extends EventEmitter {
         if (this.game.getField().length < pos - 1) {
             this.gameOver();
             return;
-            // Check if the player is behind the start field.
+        // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
             this.players.current().setPosition(0);
