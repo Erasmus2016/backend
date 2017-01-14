@@ -15,8 +15,9 @@ The game is designed as a board game where other human players are able to join 
 During the game, every player will be asked questions about Würzburg's or Brno's culture or history.
 
 This project is split into two parts:
-1. The backend which is developed with Node.js
-2. The frontend which is developed primary with React.
+
+1. The [backend](https://github.com/Erasmus2016/backend) which is developed with Node.js
+2. The [frontend](https://github.com/Erasmus2016/frontend) which is developed primary with React.
 
 The communication between this two parts is realized with socket.io.
 
