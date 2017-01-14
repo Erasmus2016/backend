@@ -26,8 +26,8 @@ This documentation targets the technical aspects of the **backend** of this proj
 
 The backend is developed with Node.js @ ECMAScript6.
 
-The questions are stored in a mySQL database.
-This project is using the mysql npm package for this database tasks.
+The questions are stored in a MySQL database.
+This project is using the ["mysql"](https://www.npmjs.com/package/mysql) npm package for this database tasks.
 
 ```
 .
@@ -58,7 +58,7 @@ All logic is done in the class subfolders.
 _controller.js_ - This class handles the backend business logic for this app.
 This is the only class which communicates with the frontend using socket.io
 
-_database.js_ - This class is responsible for the mySQL database queries.
+_database.js_ - This class is responsible for the MySQL database queries.
 
 _game.js_ - This class stores the current game round including the playing field (map).
 
