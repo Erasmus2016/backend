@@ -15,12 +15,19 @@ new Database((db) => {
         next();
     });
 
-    const clients = [],
-        instances = {};
+    let clients = [];
+    const instances = {};
 
     // Client connects
     io.on('connection', (socket) => {
         log('new client (' + socket.handshake.headers['x-forwarded-for'] + '[' + socket.id + '])');
+
+        socket.on('disconnect', () => {
+            clients = clients.filter((client) => {
+                return client.id != socket.id;
+            });
+        });
+
         // Add socket to client queue
         clients.push(socket);
         if (clients.length > 1) {
