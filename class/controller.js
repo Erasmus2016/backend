@@ -23,10 +23,9 @@ class Controller extends EventEmitter {
         this.room = this._io.sockets.in(this.room_name);
 
         log('new room (' + this.room_name + ')', 'green');
-
-        this.room.emit('login');
     }
 
+    // Adds a new player to the players list.
     addPlayer() {
         for (let key in arguments) {
             if (!arguments.hasOwnProperty(key))
@@ -36,16 +35,18 @@ class Controller extends EventEmitter {
             player.getSocket().join(this.room_name);
             this.players.add(player);
 
-            //set socket events
+            // Set socket events.
             player.getSocket().on('login', (data) => {
-                //todo remove language validator
-                if (!Validator.isColorValid(data.color)
-                    || !Validator.isCategoryValid(data.category) || !Validator.isStringHarmless(data.name)) {
+
+                if (!Validator.isColorValid(data.color) || !Validator.isCategoryValid(data.category) || !Validator.isStringHarmless(data.name)) {
                     throw "Invalid data (color, category or name) from client.";
                 }
 
                 player.setName(data.name);
-                // TODO: Logic bug: The last player changes the category for all players in this game.
+
+                // Only the first player can set the category. All following player can't change the category.
+                // TODO: Send all following players the category and notify them there are unable to change the category.
+                // TODO: Alternate check for the same category before adding a new player to a room. Only move players with the same category to the same room.
                 this.game.setCategory(data.category);
 
                 // Check if player color is still available.
@@ -61,6 +62,8 @@ class Controller extends EventEmitter {
                 this.emit('disconnect');
             });
         }
+
+        this.room.emit('login');
     }
 
     broadcast(event, data) {
@@ -172,7 +175,7 @@ class Controller extends EventEmitter {
         if (this.game.getField().length < pos - 1) {
             this.gameOver();
             return;
-            // Check if the player is behind the start field.
+        // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
             this.players.current().setPosition(0);

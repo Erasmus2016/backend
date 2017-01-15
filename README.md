@@ -10,13 +10,14 @@ www.barmania.eu
 
 This little project targets primary the international collaboration between German and Czech students.
 
-Project topic is a web game witch is playable on the web.
+Project's topic is a web game witch is playable on the web.
 The game is designed as a board game where other human players are able to join and play against each other.
 During the game, every player will be asked questions about Würzburg's or Brno's culture or history.
 
 This project is split into two parts:
-1. The backend which is developed with Node.js
-2. The frontend which is developed primary with React.
+
+1. The [backend](https://github.com/Erasmus2016/backend) which is developed with Node.js
+2. The [frontend](https://github.com/Erasmus2016/frontend) which is developed primary with React.
 
 The communication between this two parts is realized with socket.io.
 
@@ -26,23 +27,24 @@ This documentation targets the technical aspects of the **backend** of this proj
 
 The backend is developed with Node.js @ ECMAScript6.
 
-The questions are stored in a mySQL database.
-This project is using the mysql npm package for this database tasks.
+The questions are stored in a MySQL database.
+This project is using the ["mysql"](https://www.npmjs.com/package/mysql) npm package for this database tasks.
 
 ```
 .
-+-- app.js // Point of entry
-+-- map.js  // A dummy map for testing purpose
++-- app.js
 +-- class
 |   +-- controller.js
 |   +-- database.js
 |   +-- game.js
 |   +-- player.js
+|   +-- playerList.js
 |   +-- question.js
 +-- config
 +-- field
 |   +-- fieldGenerator.js
 +-- functions
+|   +-- index.js
 |   +-- randomNumber.js
 |   +-- validator.js
 ```
@@ -57,11 +59,13 @@ All logic is done in the class subfolders.
 _controller.js_ - This class handles the backend business logic for this app.
 This is the only class which communicates with the frontend using socket.io
 
-_database.js_ - This class is responsible for the mySQL database queries.
+_database.js_ - This class is responsible for the MySQL database queries.
 
 _game.js_ - This class stores the current game round including the playing field (map).
 
 _player.js_ - This class represents a player object with its properties.
+
+_playerList.js_ - This class represents a collection for all connected players for a game.
 
 _question.js_ - This class handles the questions and answers requests.
 
@@ -75,13 +79,11 @@ _fieldGenerator.js_ - This file generates a random playing field.
 
 **functions**-Folder:
 
+_index.js_ - Contains some helper functions like a guid generator or an improved logging functionality. 
+
 _randomNumber.js_ - Generates the dice results for the board game.
 
 _validator.js_ - Validates all user input for obviously reasons.
-
-**node_modules**-Folder:
-
-Stores all required npm packages for this app.
 
 ## Architecture diagrams
 

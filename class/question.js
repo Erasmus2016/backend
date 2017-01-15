@@ -18,8 +18,6 @@ class Question {
     getQuestionWithAnswers(category, difficulty, language) {
 
         try {
-            // Not sure if hack or just necessary...
-
             // Query database and get the language id.
             // TODO: make sure, the database languages entries are not going to change -> use a switch-case instead of an database query -> getLanguageId function.
             const sql1 = 'SELECT id FROM language ' +
@@ -27,9 +25,8 @@ class Question {
 
             return this.db.query(sql1).then((result) => {
 
-                // console.log('LanguageId: ', result);
                 const languageId = result[0].id;
-                const difficultyInt = this.getDifficulty(difficulty);
+                const difficultyInt = Question.getDifficulty(difficulty);
 
                 // Query database and get one random question.
                 const sql2 = 'SELECT * FROM question ' +
@@ -39,7 +36,6 @@ class Question {
 
                 return this.db.query(sql2).then((result) => {
 
-                    // console.log(result);
                     const question = result[0];
                     const isNewQuestion = this.isNewQuestion(question.id);
 
@@ -52,7 +48,6 @@ class Question {
 
                         return this.db.query(sql3).then((result) => {
 
-                            // console.log(result);
                             const translatedQuestion = result[0].content;
 
                             // Query database and get the translated answers.
