@@ -210,7 +210,10 @@ class Controller extends EventEmitter {
             const positions = [];
 
             this.players.each((player) => {
-                positions[player.getId()] = player.getPosition();
+                positions[player.getId()] = {
+                    color: player.getColor(),
+                    position: player.getPosition()
+                };
             });
 
             this.broadcast('player-position', positions);
