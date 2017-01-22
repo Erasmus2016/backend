@@ -207,7 +207,7 @@ class Controller extends EventEmitter {
 
         // Notify all players with the new position of all players.
         promise.then(() => {
-            const positions = [];
+            const positions = {};
 
             this.players.each((player) => {
                 positions[player.getId()] = {
