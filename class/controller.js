@@ -63,7 +63,9 @@ class Controller extends EventEmitter {
             });
         }
 
-        this.room.emit('login');
+        setTimeout(() => {
+            this.room.emit('login');
+        }, 1000);   // 1 second.
     }
 
     broadcast(event, data) {
