@@ -44,7 +44,7 @@ class Controller extends EventEmitter {
 
                 player.setName(data.name);
 
-                // Only the first player can set the category. All following player can't change the category.
+                // Only the first player can set the category. All following players can't change the category.
                 // TODO: Send all following players the category and notify them there are unable to change the category.
                 // TODO: Alternate check for the same category before adding a new player to a room. Only move players with the same category to the same room.
                 this.game.setCategory(data.category);
