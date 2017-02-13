@@ -28,15 +28,30 @@ class Game {
 
     // Returns true, if the color is still available - otherwise false.
     // Logic: Removes the checked color from array due to the fact, that every player has to have an unique color.
-    isColorAvailable(color) {
-        const index = this.availableColors.indexOf(color);
+    isColorAvailable(newColor) {
+        const newColorIndex = this.getIndexOfColor(newColor);
 
-        if (index !== -1) {
-            this.availableColors.splice(index, 1);
+        if (newColorIndex !== -1) {
+            this.availableColors.splice(newColorIndex, 1);
             return true;
         }
         return false;
     };
+
+    // Adds an old color to the available colors array if any.
+    releaseOldColorIfAny(oldColor) {
+        const oldColorIndex = this.getIndexOfColor(oldColor);
+
+        if (typeof oldColor !== 'undefined' && oldColorIndex === -1) {
+            this.availableColors.push(oldColor);
+        }
+    }
+
+    // Returns the index of the input color from the available colors array as an integer.
+    // Returns -1 if the input color doesn't exist.
+    getIndexOfColor(color) {
+        return this.availableColors.indexOf(color);
+    }
 
     // Returns an array with all remaining colors left.
     getAllAvailableColors() {

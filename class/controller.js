@@ -49,6 +49,8 @@ class Controller extends EventEmitter {
                 // TODO: Alternate check for the same category before adding a new player to a room. Only move players with the same category to the same room.
                 this.game.setCategory(data.category);
 
+                this.game.releaseOldColorIfAny(player.getColor());
+
                 // Check if player color is still available.
                 if (this.game.isColorAvailable(data.color)) {
                     player.setColor(data.color);
