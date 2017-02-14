@@ -89,6 +89,7 @@ class Controller extends EventEmitter {
         }
 
         this.broadcast('map', this.game.getField());
+        this.broadcastPlayerPositions();
 
         log('game start (' + this.room_name + ')');
         this.gameRound();
@@ -209,16 +210,18 @@ class Controller extends EventEmitter {
 
         // Notify all players with the new position of all players.
         promise.then(() => {
-            const positions = {};
 
-            this.players.each((player) => {
-                positions[player.getId()] = {
-                    color: player.getColor(),
-                    position: player.getPosition()
-                };
-            });
+            this.broadcastPlayerPositions();
+            //const positions = {};
 
-            this.broadcast('player-position', positions);
+            //this.players.each((player) => {
+            //    positions[player.getId()] = {
+            //        color: player.getColor(),
+            //        position: player.getPosition()
+            //    };
+            //});
+
+            // this.broadcast('player-position', positions);
 
             // It's the next players turn.
             this.players.next();
@@ -228,6 +231,21 @@ class Controller extends EventEmitter {
         });
     }
 
+    // Sends to all players the current positions and color for all players.
+    broadcastPlayerPositions() {
+        const positions = {};
+
+        this.players.each((player) => {
+            positions[player.getId()] = {
+                color: player.getColor(),
+                position: player.getPosition()
+            };
+        });
+
+        this.broadcast('player-position', positions);
+    }
+
+    // Returns the id (GUID) of this controller.
     getId() {
         return this._id;
     }
