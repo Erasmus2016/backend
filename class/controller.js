@@ -12,6 +12,8 @@ const EventEmitter = require('events'),
 
 class Controller extends EventEmitter {
     constructor(io, id, db) {
+
+        // Must call super for "this" to be defined.
         super();
 
         this._id = id;
