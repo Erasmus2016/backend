@@ -114,7 +114,7 @@ class Controller extends EventEmitter {
     }
 
     // Handles the question logic.
-    handleQuestion(resolve, reject) {
+    handleQuestion(resolve) {
 
         // TODO: TEST
         let difficulty;
@@ -192,13 +192,11 @@ class Controller extends EventEmitter {
         const promise = new Promise((resolve, reject) => {
             switch (step.type) {
                 case 'default':
-                case 'question':
                     resolve();
                     break;
-                //todo question fields frontend
-                /*case 'question':
-                 this.handleQuestion(resolve, reject);
-                 break;*/
+                case 'question':
+                    this.handleQuestion(resolve);
+                    break;
                 case 'jump':
                     this.players.current().setPosition(step.jumpDestinationId);
                     resolve();
