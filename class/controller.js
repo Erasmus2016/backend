@@ -108,6 +108,67 @@ class Controller extends EventEmitter {
         });
     }
 
+    // Moves the player to a new position on the playing field (map).
+    process(dice) {
+        let pos = this.players.current().addPosition(dice);
+
+        // Check if the player has finished the game.
+        if (this.game.getField().length < pos - 1) {
+            this.gameOver();
+            return;
+        // Check if the player is behind the start field.
+        } else if (pos < 0) {
+            // Move to start.
+            this.players.current().setPosition(0);
+        }
+
+        let step = this.game.getField()[pos];
+
+        // Check the new position of the player and deals with special fields.
+        const promise = new Promise((resolve, reject) => {
+            switch (step.type) {
+                case 'default':
+                    resolve();
+                    break;
+                case 'question':
+                    this.handleQuestion(resolve);
+                    break;
+                case 'jump':
+                    this.players.current().setPosition(step.jumpDestinationId);
+                    resolve();
+                    break;
+                default:
+                    reject('unknown field type');
+            }
+        });
+
+        // Notify all players with the new position of all players.
+        promise.then(() => {
+
+            this.broadcastPlayerPositions();
+
+            // It's the next players turn.
+            this.players.next();
+            this.gameRound();
+        }).catch(() => {
+            throw 'unknown error';
+        });
+    }
+
+    // Sends to all players the current positions and color for all players.
+    broadcastPlayerPositions() {
+        const positions = {};
+
+        this.players.each((player) => {
+            positions[player.getId()] = {
+                color: player.getColor(),
+                position: player.getPosition()
+            };
+        });
+
+        this.broadcast('player-position', positions);
+    }
+
     // Handles the end of game action. Sends the id of the winner player.
     gameOver() {
         this.broadcast('game-over', this.players.current().getId());
@@ -172,72 +233,10 @@ class Controller extends EventEmitter {
         });
     }
 
-    // Moves the player to a new position on the playing field (map).
-    process(dice) {
-        let pos = this.players.current().addPosition(dice);
-
-        // Check if the player has finished the game.
-        if (this.game.getField().length < pos - 1) {
-            this.gameOver();
-            return;
-        // Check if the player is behind the start field.
-        } else if (pos < 0) {
-            // Move to start.
-            this.players.current().setPosition(0);
-        }
-
-        let step = this.game.getField()[pos];
-
-        // Check the new position of the player and deals with special fields.
-        const promise = new Promise((resolve, reject) => {
-            switch (step.type) {
-                case 'default':
-                    resolve();
-                    break;
-                case 'question':
-                    this.handleQuestion(resolve);
-                    break;
-                case 'jump':
-                    this.players.current().setPosition(step.jumpDestinationId);
-                    resolve();
-                    break;
-                default:
-                    reject('unknown field type');
-            }
-        });
-
-        // Notify all players with the new position of all players.
-        promise.then(() => {
-
-            this.broadcastPlayerPositions();
-
-            // It's the next players turn.
-            this.players.next();
-            this.gameRound();
-        }).catch(() => {
-            throw 'unknown error';
-        });
-    }
-
-    // Sends to all players the current positions and color for all players.
-    broadcastPlayerPositions() {
-        const positions = {};
-
-        this.players.each((player) => {
-            positions[player.getId()] = {
-                color: player.getColor(),
-                position: player.getPosition()
-            };
-        });
-
-        this.broadcast('player-position', positions);
-    }
-
     // Returns the id (GUID) of this controller.
     getId() {
         return this._id;
     }
-
 }
 
 module.exports = Controller;
