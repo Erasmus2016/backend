@@ -70,10 +70,6 @@ class Controller extends EventEmitter {
         }, 1000);   // 1 second.
     }
 
-    broadcast(event, data) {
-        this._io.sockets.in(this.room_name).emit(event, data);
-    }
-
     // Sends all available colors to all players (clients).
     sendAvailableColorsToAllClients() {
         this.broadcast('room', this.room_name);
@@ -94,7 +90,6 @@ class Controller extends EventEmitter {
         log('game start (' + this.room_name + ')');
         this.gameRound();
     }
-
 
     // The current player will be notified to role the dice.
     gameRound() {
@@ -155,7 +150,7 @@ class Controller extends EventEmitter {
         });
     }
 
-    // Sends to all players the current positions and color for all players.
+    // Sends to all players the current position and selected color for all players.
     broadcastPlayerPositions() {
         const positions = {};
 
@@ -231,6 +226,11 @@ class Controller extends EventEmitter {
         return this._question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
             console.log("Result from database call: " + result);
         });
+    }
+
+    // Sends the input data with the appropriate event name to all connected clients within this room.
+    broadcast(event, data) {
+        this._io.sockets.in(this.room_name).emit(event, data);
     }
 
     // Returns the id (GUID) of this controller.
