@@ -212,16 +212,6 @@ class Controller extends EventEmitter {
         promise.then(() => {
 
             this.broadcastPlayerPositions();
-            //const positions = {};
-
-            //this.players.each((player) => {
-            //    positions[player.getId()] = {
-            //        color: player.getColor(),
-            //        position: player.getPosition()
-            //    };
-            //});
-
-            // this.broadcast('player-position', positions);
 
             // It's the next players turn.
             this.players.next();
