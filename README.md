@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/Erasmus2016/backend](https://badges.gitter.im/Erasmus2016/backend.svg)](https://gitter.im/Erasmus2016/backend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## Project's website
+## Projects website
 
 www.barmania.eu
 
@@ -10,7 +10,7 @@ www.barmania.eu
 
 This little project targets primary the international collaboration between German and Czech students.
 
-Project's topic is a web game witch is playable on the web.
+Projects topic is a web game witch is playable on the web.
 The game is designed as a board game where other human players are able to join and play against each other.
 During the game, every player will be asked questions about Würzburg's or Brno's culture or history.
 
