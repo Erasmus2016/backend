@@ -63,7 +63,7 @@ class Controller extends EventEmitter {
                 }
             }).on('disconnect', () => {
                 this.players.remove(player.getId());
-                this.emit('disconnect');
+                this.room.emit('disconnect');
             });
         }
 
