@@ -6,7 +6,7 @@ class Question {
 
     constructor(db) {
         this.db = db;
-        this.usedQuestions = [];
+        this.usedQuestionIds = [];
     };
 
     // Gets the question with the appropriate answers from database and returns it.
@@ -19,7 +19,7 @@ class Question {
 
         try {
             // Query database and get the language id.
-            // TODO: make sure, the database languages entries are not going to change -> use a switch-case instead of an database query -> getLanguageId function.
+            // TODO: Make sure, the database languages entries are not going to change -> use a switch-case instead of an database query -> getLanguageId function.
             const sql1 = 'SELECT id FROM language ' +
                 'WHERE language = "' + language + '"';
 
@@ -57,7 +57,6 @@ class Question {
 
                             return this.db.query(sql4).then((result) => {
 
-                                // console.log(result);
                                 const translatedAnswers = result;
 
                                 return new Promise((resolve) => {
@@ -109,6 +108,24 @@ class Question {
         }
     };
 
+    // Checks and returns true, if the question wasn't already used within this game - otherwise false.
+    isNewQuestion(questionId) {
+        const index = this.usedQuestionIds.indexOf(questionId);
+
+        if (index === -1) {
+            this.saveQuestionIdToRam(questionId);
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+
+    // Adds a question id to the already used question ids array.
+    saveQuestionIdToRam(questionId) {
+        this.usedQuestionIds.push(questionId);
+    };
+
     // Returns the language id for both question and answer.
     getLanguage(language) {
 
@@ -147,24 +164,6 @@ class Question {
                 throw error;
             }
         });
-    };
-
-    // Checks and returns true, if the question wasn't already used within this game - otherwise false.
-    isNewQuestion(questionId) {
-        const index = this.usedQuestions.indexOf(questionId);
-
-        if (index === -1) {
-            this.saveQuestionIdToRam(questionId);
-            return true;
-        }
-        else {
-            return false;
-        }
-    };
-
-    // Adds a questionId to the already used questions array.
-    saveQuestionIdToRam(questionId) {
-        this.usedQuestions.push(questionId);
     };
 
     // Returns the translated question for this question.
