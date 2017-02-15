@@ -68,7 +68,9 @@ class Question {
                     }
                     else {
                         // For understanding recursion you first have to understand recursion.
-                        this.getQuestionWithAnswers(category, difficulty, language);
+                        return new Promise((resolve) => {
+                            return resolve(this.getQuestionWithAnswers(category, difficulty, language));
+                        });
                     }
                 });
             });
