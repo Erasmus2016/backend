@@ -6,7 +6,7 @@
 // Allowed characters: A-Z a-z 0-9 _ and German and Czech special characters.
 const regex = /^[\wäöüßáčďéěíňóřšťúůýž]+$/i;
 
-// Gets and checks an input data objects and returns a checked version.
+// Gets and checks an input data object and returns a checked version.
 function checkData(data) {
 
     const checkedColor = checkColor(data.Color);
