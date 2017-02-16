@@ -227,6 +227,7 @@ class Controller extends EventEmitter {
         // TODO: Testing this call.
         return this._question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
             console.log("Result from database call: " + result);
+            return result;
         });
     }
 
