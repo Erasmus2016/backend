@@ -208,6 +208,9 @@ class Controller extends EventEmitter {
                 } else {
                     this.players.current().subPosition(difficulty);
                 }
+
+                // Send player the correct answer id for this very question.
+                this.broadcast('correct-answer', correctAnswerId);
                 resolve();
             });
         });
