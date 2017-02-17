@@ -46,13 +46,14 @@ This project is using the ["mysql"](https://www.npmjs.com/package/mysql) npm pac
 +-- functions
 |   +-- index.js
 |   +-- randomNumber.js
+|   +-- shuffle.js
 |   +-- validator.js
 ```
 
 The app.js is the point of entry.
 This file sets up the backend and triggers the controller class.
 
-All logic is done in the class subfolders.
+All game logic is done in the class subfolders.
 
 **class**-Folder:
 
@@ -82,6 +83,8 @@ _fieldGenerator.js_ - This file generates a random playing field.
 _index.js_ - Contains some helper functions like a guid generator or an improved logging functionality. 
 
 _randomNumber.js_ - Generates the dice results for the board game.
+
+_shuffle_ - Shuffles an input array with some elements in order to ensure random ordered values. 
 
 _validator.js_ - Validates all user input for obviously reasons.
 
