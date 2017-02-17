@@ -109,10 +109,8 @@ class Controller extends EventEmitter {
     process(dice) {
         let pos = this.players.current().addPosition(dice);
         // Check if the player has finished the game.
-        console.log(pos);
         if (this.game.getField().length < pos) {
             this.gameOver();
-            console.log('game-over');
             return;
             // Check if the player is behind the start field.
         } else if (pos < 0) {
@@ -120,8 +118,6 @@ class Controller extends EventEmitter {
             this.players.current().setPosition(0);
         }
 
-        //console.log(this.game.getField());
-        //console.log(pos);
         let step = this.game.getField()[pos];
 
         // Check the new position of the player and deals with special fields.
@@ -220,7 +216,7 @@ class Controller extends EventEmitter {
             this.players.current().getSocket().removeAllListeners('set-difficulty');
             this.players.current().subPosition(difficulty);
             resolve();
-        }, 500);  // 20 seconds.
+        }, 20000);  // 20 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
