@@ -46,13 +46,14 @@ This project is using the ["mysql"](https://www.npmjs.com/package/mysql) npm pac
 +-- functions
 |   +-- index.js
 |   +-- randomNumber.js
+|   +-- shuffle.js
 |   +-- validator.js
 ```
 
 The app.js is the point of entry.
 This file sets up the backend and triggers the controller class.
 
-All logic is done in the class subfolders.
+All game logic is done in the class subfolders.
 
 **class**-Folder:
 
@@ -83,6 +84,8 @@ _index.js_ - Contains some helper functions like a guid generator or an improved
 
 _randomNumber.js_ - Generates the dice results for the board game.
 
+_shuffle_ - Shuffles an input array with some elements in order to ensure random ordered values. 
+
 _validator.js_ - Validates all user input for obviously reasons.
 
 ## Architecture diagrams
@@ -105,6 +108,7 @@ There are multiple actions available:
 * _roll-the-dice_ - When there's a players turn the backend is pushing this information to this player.
 * _dice-result_ - When the player triggered the frontend _roll-the-dice_ action, the backend is getting a random dice result und returns this result to the specific player.
 * _question_ - If a player requested a question the backend is sending an array with three elements: First the question object, next an answer array with the 4 answers for this question, and last the image (if any or null).
+* _correct-answer_ - Sends the correct answer id to a player after he answered the question.
 * _player-position_ - After a movement the new position for the current player will be broadcasted to all players.
 * _game-over_ - In case of the end of the game, this action will be invoked. The backend is sending the id of the winning player to all players of this game.
 
