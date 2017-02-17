@@ -108,17 +108,20 @@ class Controller extends EventEmitter {
     // Moves the player to a new position on the playing field (map).
     process(dice) {
         let pos = this.players.current().addPosition(dice);
-
         // Check if the player has finished the game.
-        if (this.game.getField().length < pos - 1) {
+        console.log(pos);
+        if (this.game.getField().length < pos) {
             this.gameOver();
+            console.log('game-over');
             return;
-        // Check if the player is behind the start field.
+            // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
             this.players.current().setPosition(0);
         }
 
+        //console.log(this.game.getField());
+        //console.log(pos);
         let step = this.game.getField()[pos];
 
         // Check the new position of the player and deals with special fields.
@@ -141,13 +144,13 @@ class Controller extends EventEmitter {
 
         // Notify all players with the new position of all players.
         promise.then(() => {
-
             this.broadcastPlayerPositions();
 
             // It's the next players turn.
             this.players.next();
             this.gameRound();
-        }).catch(() => {
+        }).catch((e) => {
+            console.log(e);
             throw 'unknown error';
         });
     }
@@ -173,13 +176,11 @@ class Controller extends EventEmitter {
 
     // Handles the question logic.
     handleQuestion(resolve) {
-
-        // TODO: TEST
-        let difficulty;
+        let difficulty = 3;
 
         //TODO: Check: Get difficulty from frontend.
         // Get player difficulty value for a question.
-        this.players.current().once('set-difficulty', (data) => {
+        this.players.current().getSocket().once('set-difficulty', (data) => {
 
             if (data.isNumber && (data == 1 || data == 3 || data == 5)) {
                 difficulty = data;
@@ -200,8 +201,7 @@ class Controller extends EventEmitter {
             });
 
             // Get and process question answer from client.
-            this.players.current().once('answer', (answerId) => {
-
+            this.players.current().getSocket().once('answer', (answerId) => {
                 // Check for correct answer and move player appropriate.
                 if (answerId.isNumber && answerId === correctAnswerId) {
                     this.players.current().addPosition(difficulty);
@@ -214,9 +214,10 @@ class Controller extends EventEmitter {
 
         // No answer is a wrong answer.
         setTimeout(() => {
+            this.players.current().getSocket().removeAllListeners('set-difficulty');
             this.players.current().subPosition(difficulty);
             resolve();
-        }, 20000);  // 20 seconds.
+        }, 500);  // 20 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
