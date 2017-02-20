@@ -69,9 +69,9 @@ class Question {
         // Query database and get the language id.
         // TODO: Make sure, the database languages entries are not going to change -> use a switch-case instead of an database query -> getLanguageId function.
         const sql = 'SELECT id FROM language ' +
-            'WHERE language = "' + language + '"';
+            'WHERE language = ?';
 
-        return this.db.query(sql).then((result) => {
+        return this.db.query(sql, [language]).then((result) => {
             return result[0].id;
         });
     }
@@ -82,11 +82,11 @@ class Question {
 
         // Query database and get one random question.
         const sql = 'SELECT * FROM question ' +
-            'WHERE difficulty = ' + difficultyInt + ' ' +
-            'AND category = "' + category + '" ' +
+            'WHERE difficulty = ? ' +
+            'AND category = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
-        return this.db.query(sql).then((result) => {
+        return this.db.query(sql, [difficultyInt, category]).then((result) => {
             return result[0];
         });
     }
@@ -95,10 +95,10 @@ class Question {
     getTranslatedQuestion(questionItem, languageId) {
         // Query database and get the translated question.
         const sql = 'SELECT content FROM question_translation ' +
-            'WHERE question_id = "' + questionItem.short_code + '" ' +
-            'AND language_id = ' + languageId;
+            'WHERE question_id = ? ' +
+            'AND language_id = ?';
 
-        return this.db.query(sql).then((result) => {
+        return this.db.query(sql, [questionItem.short_code, languageId]).then((result) => {
             return result[0].content;
         });
     }
@@ -107,10 +107,10 @@ class Question {
     getTranslatedAnswers(questionItem, languageId) {
         // Query database and get the translated answers.
         const sql = 'SELECT id, content FROM answer_translation ' +
-            'WHERE question_id = "' + questionItem.short_code + '" ' +
-            'AND language_id = ' + languageId;
+            'WHERE question_id = ? ' +
+            'AND language_id = ?';
 
-        return this.db.query(sql).then((result) => {
+        return this.db.query(sql, [questionItem.short_code, languageId]).then((result) => {
             // Shuffle the answers to avoid repetition.
             return shuffle.shuffleAnswers(result);
         });
