@@ -9,6 +9,7 @@ class Question {
     constructor(db) {
         this.db = db;
         this.usedQuestionIds = [];
+        this.recursionSafetyCounter = 0;
     };
 
     // Gets the question with the appropriate answers from database and returns it.
@@ -18,29 +19,33 @@ class Question {
     // 1. The translated question as a string.
     // 2. The translated answers as a string array.
     getQuestionWithAnswers(category, difficulty, language) {
-        try {
-            return this.determineQuestion(category, difficulty).then((questionItem) => {
 
-                if (this.isNewQuestion(questionItem.id)) {
+        return this.determineQuestion(category, difficulty).then((questionItem) => {
 
-                    return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
+            if (this.isNewQuestion(questionItem.id)) {
 
-                        return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
+                return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
 
-                            return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
-                        });
+                    return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
+
+                        this.recursionSafetyCounter = 0;
+                        return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
                     });
-                }
-                else {
-                    // For understanding recursion you first have to understand recursion.
-                    return Promise.resolve(this.getQuestionWithAnswers(category, difficulty, language));
-                }
-            });
-        }
-        catch (ex) {
+                });
+            }
+            else if (this.recursionSafetyCounter > 50) {
+                throw "No appropriate questions left.";
+            }
+            else {
+                this.recursionSafetyCounter++;
+
+                // For understanding recursion you first have to understand recursion.
+                return Promise.resolve(this.getQuestionWithAnswers(category, difficulty, language));
+            }
+        }).catch(function (ex) {
             console.log(ex);
-            throw ex;
-        }
+            return ex;
+        });
     };
 
     // Checks and returns true, if the question wasn't already used within this game - otherwise false.
