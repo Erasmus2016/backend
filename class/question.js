@@ -62,6 +62,7 @@ class Question {
     };
 
     // Sets the language id (required for both question and answers).
+    // Obsolete - no longer in use.
     setLanguageId(language) {
         // Query database and get the language id.
         // TODO: Make sure, the database languages entries are not going to change -> use a switch-case instead of an database query -> getLanguageId function.
@@ -76,7 +77,6 @@ class Question {
     // Determines and sets a random question object based on the selected category and difficulty level.
     determineQuestion(category, difficulty) {
         const difficultyInt = Question.getDifficultyId(difficulty);
-        const categoryLowercase = category.toLowerCase();
 
         // Query database and get one random question.
         const sql = 'SELECT * FROM question ' +
@@ -84,7 +84,7 @@ class Question {
             'AND category = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
-        return this.db.query(sql, [difficultyInt, categoryLowercase]).then((result) => {
+        return this.db.query(sql, [difficultyInt, category]).then((result) => {
             return result[0];
         });
     }

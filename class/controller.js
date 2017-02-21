@@ -185,15 +185,15 @@ class Controller extends EventEmitter {
                 throw 'Invalid difficulty value from client.';
             }
 
-            // Get a question with its appropriate answers from database.
+            // Get a question with its appropriate answers from the database.
             let questionObject = this.getQuestion(difficulty);
-            let correctAnswerId = questionObject[0].correctAnswer;
+            let correctAnswerId = questionObject[0].answer;
 
-            // Send question and answers to client. Also send the image for this question.
+            // Send translated question and answers to the client. Also send the image for this question.
             this.players.current().emit('question', {
                 question: questionObject[1],
                 answers: questionObject[2],
-                questionImage: questionObject[0].img
+                questionImage: questionObject[0].image
             });
 
             // Get and process question answer from client.
@@ -221,12 +221,11 @@ class Controller extends EventEmitter {
 
     // Gets a random question with the appropriate answers from database.
     getQuestion(difficulty) {
-        const gameCategory = this.game.getCategory();
+        const gameCategory = this.game.getCategory().toLowerCase();
         const userLanguage = this.players.current().lang;
 
         // TODO: Testing this call.
         return this._question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
-            console.log("Result from database call: " + result);
             return result;
         });
     }
