@@ -19,15 +19,15 @@ class Question {
     // 2. The translated answers as a string array.
     getQuestionWithAnswers(category, difficulty, language) {
         try {
-            return this.setLanguageId(language).then((languageId) => {
+            //return this.setLanguageId(language).then((languageId) => {
 
                 return this.determineQuestion(category, difficulty).then((questionItem) => {
 
                     if (this.isNewQuestion(questionItem.id)) {
 
-                        return this.getTranslatedQuestion(questionItem, languageId).then((translatedQuestion) => {
+                        return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
 
-                            return this.getTranslatedAnswers(questionItem, languageId).then((translatedAnswers) => {
+                            return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
 
                                 return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
                             });
@@ -38,7 +38,7 @@ class Question {
                         return Promise.resolve(this.getQuestionWithAnswers(category, difficulty, language));
                     }
                 });
-            });
+            //});
         }
         catch (ex) {
             console.log(ex);
@@ -79,6 +79,7 @@ class Question {
     // Determines and sets a random question object based on the selected category and difficulty level.
     determineQuestion(category, difficulty) {
         const difficultyInt = Question.getDifficultyId(difficulty);
+        const categoryLowercase = category.toLowerCase();
 
         // Query database and get one random question.
         const sql = 'SELECT * FROM question ' +
@@ -86,31 +87,42 @@ class Question {
             'AND category = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
-        return this.db.query(sql, [difficultyInt, category]).then((result) => {
+        return this.db.query(sql, [difficultyInt, categoryLowercase]).then((result) => {
             return result[0];
         });
     }
 
     // Returns the translated question for this question.
-    getTranslatedQuestion(questionItem, languageId) {
+    getTranslatedQuestion(questionItemId, language) {
         // Query database and get the translated question.
-        const sql = 'SELECT content FROM question_translation ' +
-            'WHERE question_id = ? ' +
-            'AND language_id = ?';
+        const sql = 'SELECT content FROM translation ' +
+            'WHERE type = "question" ' +
+            'AND parent = ? ' +
+            'AND lang = ?';
 
-        return this.db.query(sql, [questionItem.short_code, languageId]).then((result) => {
+        return this.db.query(sql, [questionItemId, language]).then((result) => {
             return result[0].content;
         });
     }
 
     // Returns the translated answers for this question as an array.
-    getTranslatedAnswers(questionItem, languageId) {
+    getTranslatedAnswers(questionItemId, language) {
         // Query database and get the translated answers.
-        const sql = 'SELECT id, content FROM answer_translation ' +
-            'WHERE question_id = ? ' +
-            'AND language_id = ?';
+        //const sql = 'SELECT id, content FROM answer_translation ' +
+        //    'WHERE question_id = ? ' +
+        //    'AND language_id = ?';
 
-        return this.db.query(sql, [questionItem.short_code, languageId]).then((result) => {
+        const sql1 = 'SELECT * FROM answer ' +
+            'WHERE question_id = ? ';
+
+        return this.db.query(sql1, []);
+
+        const sql = 'SELECT * FROM translation ' +
+            'WHERE type = "answer" ' +
+            'AND parent = ? ' +
+            'AND lang = ?';
+
+        return this.db.query(sql, [questionItemId, language]).then((result) => {
             // Shuffle the answers to avoid repetition.
             return shuffle.shuffleAnswers(result);
         });
