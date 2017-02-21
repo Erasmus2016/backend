@@ -19,26 +19,23 @@ class Question {
     // 2. The translated answers as a string array.
     getQuestionWithAnswers(category, difficulty, language) {
         try {
-            //return this.setLanguageId(language).then((languageId) => {
+            return this.determineQuestion(category, difficulty).then((questionItem) => {
 
-                return this.determineQuestion(category, difficulty).then((questionItem) => {
+                if (this.isNewQuestion(questionItem.id)) {
 
-                    if (this.isNewQuestion(questionItem.id)) {
+                    return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
 
-                        return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
+                        return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
 
-                            return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
-
-                                return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
-                            });
+                            return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
                         });
-                    }
-                    else {
-                        // For understanding recursion you first have to understand recursion.
-                        return Promise.resolve(this.getQuestionWithAnswers(category, difficulty, language));
-                    }
-                });
-            //});
+                    });
+                }
+                else {
+                    // For understanding recursion you first have to understand recursion.
+                    return Promise.resolve(this.getQuestionWithAnswers(category, difficulty, language));
+                }
+            });
         }
         catch (ex) {
             console.log(ex);
@@ -108,19 +105,14 @@ class Question {
     // Returns the translated answers for this question as an array.
     getTranslatedAnswers(questionItemId, language) {
         // Query database and get the translated answers.
-        //const sql = 'SELECT id, content FROM answer_translation ' +
-        //    'WHERE question_id = ? ' +
-        //    'AND language_id = ?';
+        const sql = 'SELECT content FROM translation ' +
+            'INNER JOIN answer ON translation.parent = answer.id ' +
+            'WHERE translation.type = "answer" ' +
+            'AND answer.question_id = ? ' +
+            'AND translation.lang = ?' +
 
-        const sql1 = 'SELECT * FROM answer ' +
-            'WHERE question_id = ? ';
-
-        return this.db.query(sql1, []);
-
-        const sql = 'SELECT * FROM translation ' +
-            'WHERE type = "answer" ' +
-            'AND parent = ? ' +
-            'AND lang = ?';
+            // Discard empty content values.
+            'AND content <> "" ';
 
         return this.db.query(sql, [questionItemId, language]).then((result) => {
             // Shuffle the answers to avoid repetition.
