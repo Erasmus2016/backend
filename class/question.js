@@ -7,8 +7,9 @@ const shuffle = require('../functions/shuffle');
 class Question {
 
     constructor(db) {
+        this._this = this;
         this.db = db;
-        this.usedQuestionIds = [];
+        this.usedQuestionIds = [0];
         this.recursionSafetyCounter = 0;
     };
 
@@ -22,7 +23,7 @@ class Question {
 
         return this.determineQuestion(category, difficulty).then((questionItem) => {
 
-            if (this.isNewQuestion(questionItem.id)) {
+            if (questionItem != "Error") {
 
                 return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
 
@@ -83,14 +84,27 @@ class Question {
     determineQuestion(category, difficulty) {
         const difficultyInt = Question.getDifficultyId(difficulty);
 
+        let joinedQuestionIds = '(' + this.usedQuestionIds.join() + ')';
+
         // Query database and get one random question.
         const sql = 'SELECT * FROM question ' +
-            'WHERE difficulty = ? ' +
+            'WHERE id NOT IN ' + joinedQuestionIds + ' ' +
+            'AND difficulty = ? ' +
             'AND category = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
         return this.db.query(sql, [difficultyInt, category]).then((result) => {
-            return result[0];
+
+            if (result != null) {
+                this._this.saveQuestionIdToRam(result[0].id);
+                return result[0];
+            }
+            else {
+                throw "No appropriate questions left.";
+            }
+        }).catch(function (ex) {
+            console.log(ex);
+            return ex;
         });
     }
 
