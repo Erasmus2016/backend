@@ -225,7 +225,7 @@ class Controller extends EventEmitter {
                     }
 
                     // Send player the correct answer id for this very question.
-                    //this.broadcast('correct-answer', answerId);
+                    this.players.current().getSocket.emit('correct-answer', answerId);
                     resolve();
                 });
             }).catch((e) => {
