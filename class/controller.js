@@ -225,7 +225,7 @@ class Controller extends EventEmitter {
         // No answer is a wrong answer.
         setTimeout(() => {
             this.players.current().getSocket().removeAllListeners('set-difficulty');
-            this.players.current().subPosition(difficultyToStep(difficulty));
+            this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
             resolve();
         }, 20000);  // 20 seconds.
     }
