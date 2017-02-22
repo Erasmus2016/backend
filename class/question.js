@@ -7,10 +7,8 @@ const shuffle = require('../functions/shuffle');
 class Question {
 
     constructor(db) {
-        this._this = this;
         this.db = db;
         this.usedQuestionIds = [0];
-        this.recursionSafetyCounter = 0;
     };
 
     // Gets the question with the appropriate answers from database and returns it.
@@ -23,26 +21,13 @@ class Question {
 
         return this.determineQuestion(category, difficulty).then((questionItem) => {
 
-            if (questionItem != "Error") {
+            return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
 
-                return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
+                return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
 
-                    return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
-
-                        this.recursionSafetyCounter = 0;
-                        return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
-                    });
+                    return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
                 });
-            }
-            else if (this.recursionSafetyCounter > 50) {
-                throw "No appropriate questions left.";
-            }
-            else {
-                this.recursionSafetyCounter++;
-
-                // For understanding recursion you first have to understand recursion.
-                return Promise.resolve(this.getQuestionWithAnswers(category, difficulty, language));
-            }
+            });
         }).catch(function (ex) {
             console.log(ex);
             return ex;
@@ -84,27 +69,24 @@ class Question {
     determineQuestion(category, difficulty) {
         const difficultyInt = Question.getDifficultyId(difficulty);
 
-        let joinedQuestionIds = '(' + this.usedQuestionIds.join() + ')';
+        let joinedUsedQuestionIds = '(' + this.usedQuestionIds.join() + ')';
 
-        // Query database and get one random question.
+        // Query database and get one random not already used question.
         const sql = 'SELECT * FROM question ' +
-            'WHERE id NOT IN ' + joinedQuestionIds + ' ' +
+            'WHERE id NOT IN ' + joinedUsedQuestionIds + ' ' +
             'AND difficulty = ? ' +
             'AND category = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
         return this.db.query(sql, [difficultyInt, category]).then((result) => {
 
-            if (result != null) {
-                this._this.saveQuestionIdToRam(result[0].id);
+            if (result.length === 1 && typeof(result[0].id !== undefined)) {
+                this.saveQuestionIdToRam(result[0].id);
                 return result[0];
             }
             else {
                 throw "No appropriate questions left.";
             }
-        }).catch(function (ex) {
-            console.log(ex);
-            return ex;
         });
     }
 
