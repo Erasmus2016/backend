@@ -42,6 +42,13 @@ new Database((db) => {
             clients = clients.filter((client) => {
                 return client.id != socket.id;
             });
+
+            for (key in rooms) {
+                if (rooms[key].id == socket.id) {
+                    log('room: ' + key + ' deleted', 'red');
+                    delete rooms[key];
+                }
+            }
         });
 
         socket.emit('mode');
@@ -64,7 +71,7 @@ new Database((db) => {
     });
 
     server.listen(5000);
-    console.log('server is running on port 5000');
+    log('server is running on port 5000', 'green');
 });
 
 // Allow CORS.

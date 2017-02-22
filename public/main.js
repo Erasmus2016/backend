@@ -8,11 +8,12 @@ socket.io.on('packet', (data) => {
 const playerNO = location.hash == '#2' ? 2 : 1;
 
 socket.on('login', () => {
+    console.clear();
     socket.emit('login', {
         color: playerNO == 1 ? 'red' : 'blue',
         name: 'player_' + playerNO,
         category: 0
-    })
+    });
 });
 
 socket.on('roll-the-dice', () => {
