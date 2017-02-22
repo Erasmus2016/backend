@@ -175,8 +175,6 @@ class Controller extends EventEmitter {
         console.log('handle-question');
         let difficulty = 3;
 
-        const difficultyToStep = Controller.mapDifficultyToStep(difficulty);
-
         //TODO: Check: Get difficulty from frontend.
         // Get player difficulty value for a question.
         this.players.current().getSocket().emit('set-difficulty');
@@ -210,9 +208,9 @@ class Controller extends EventEmitter {
                 this.players.current().getSocket().once('answer', (answerId) => {
                     // Check for correct answer and move player appropriate.
                     if (answerId.isNumber && map[answerId] === correctAnswerId) {
-                        this.players.current().addPosition(difficultyToStep(difficulty));
+                        this.players.current().addPosition(Controller.mapDifficultyToStep(difficulty));
                     } else {
-                        this.players.current().subPosition(difficultyToStep(difficulty));
+                        this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
                     }
 
                     // Send the player the correct answer id for this very question.
