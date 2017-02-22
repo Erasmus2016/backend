@@ -34,40 +34,8 @@ class Question {
         });
     };
 
-    // Checks and returns true, if the question wasn't already used within this game - otherwise false.
-    isNewQuestion(questionId) {
-        const index = this.usedQuestionIds.indexOf(questionId);
-
-        if (index === -1) {
-            this.saveQuestionIdToRam(questionId);
-            return true;
-        }
-        else {
-            return false;
-        }
-    };
-
-    // Adds a question id to the already used question ids array.
-    saveQuestionIdToRam(questionId) {
-        this.usedQuestionIds.push(questionId);
-    };
-
-    // Sets the language id (required for both question and answers).
-    // Obsolete - no longer in use.
-    setLanguageId(language) {
-        // Query database and get the language id.
-        // TODO: Make sure, the database languages entries are not going to change -> use a switch-case instead of an database query -> getLanguageId function.
-        const sql = 'SELECT id FROM language ' +
-            'WHERE language = ?';
-
-        return this.db.query(sql, [language]).then((result) => {
-            return result[0].id;
-        });
-    }
-
     // Determines and sets a random question object based on the selected category and difficulty level.
     determineQuestion(category, difficulty) {
-        const difficultyInt = difficulty;
 
         let joinedUsedQuestionIds = '(' + this.usedQuestionIds.join() + ')';
 
@@ -78,7 +46,7 @@ class Question {
             'AND category = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
-        return this.db.query(sql, [difficultyInt, category]).then((result) => {
+        return this.db.query(sql, [difficulty, category]).then((result) => {
 
             if (result.length === 1 && typeof(result[0].id !== undefined)) {
                 this.saveQuestionIdToRam(result[0].id);
@@ -90,7 +58,12 @@ class Question {
         });
     }
 
-    // Returns the translated question for this question.
+    // Adds a question id to the already used question ids array.
+    saveQuestionIdToRam(questionId) {
+        this.usedQuestionIds.push(questionId);
+    };
+
+    // Returns the translated question for this very question.
     getTranslatedQuestion(questionItemId, language) {
         // Query database and get the translated question.
         const sql = 'SELECT content FROM translation ' +
@@ -103,10 +76,10 @@ class Question {
         });
     }
 
-    // Returns the translated answers for this question as an array.
+    // Returns the translated answers for this very question as an array.
     getTranslatedAnswers(questionItemId, language) {
         // Query database and get the translated answers.
-        const sql = 'SELECT content, parent as id FROM translation ' +
+        const sql = 'SELECT content, parent AS id FROM translation ' +
             'INNER JOIN answer ON translation.parent = answer.id ' +
             'WHERE translation.type = "answer" ' +
             'AND answer.question_id = ? ' +
@@ -120,20 +93,6 @@ class Question {
             return shuffle.shuffleAnswers(result);
         });
     }
-
-    // Returns the language id as an integer.
-    static getLanguageId(language) {
-        switch (language) {
-            case "German":
-                return 1;
-            case "Czech":
-                return 2;
-            case "English":
-                return 3;
-            default:
-                throw 'Unable to get languageId.';
-        }
-    };
 }
 
 module.exports = Question;
