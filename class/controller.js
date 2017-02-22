@@ -258,6 +258,8 @@ class Controller extends EventEmitter {
                 return 3;
             case 3:
                 return 5;
+            default:
+                throw "Invalid difficulty value passed.";
         }
     }
 }
