@@ -175,16 +175,7 @@ class Controller extends EventEmitter {
         console.log('handle-question');
         let difficulty = 3;
 
-        const difficultyToStep = difficulty => {
-            switch (difficulty) {
-                case 1:
-                    return 1;
-                case 2:
-                    return 3;
-                case 3:
-                    return 5;
-            }
-        };
+        const difficultyToStep = Controller.mapDifficultyToStep(difficulty);
 
         //TODO: Check: Get difficulty from frontend.
         // Get player difficulty value for a question.
@@ -198,21 +189,21 @@ class Controller extends EventEmitter {
             }
 
             // Get a question with its appropriate answers from the database.
-            this.getQuestion(difficulty).then((result) => {
-                const questionObject = result;
+            this.getQuestion(difficulty).then((questionObject) => {
                 let correctAnswerId = questionObject[0].answer;
 
                 const map = questionObject[2].map(answer => {
                     return answer.id;
                 });
 
-                // Send translated question and answers to the client. Also send the image for this question.
+                // Send translated question and answers to the client.
+                // Also send the link to the image for this question.
                 this.players.current().getSocket().emit('question', {
                     question: questionObject[1],
                     answers: questionObject[2].map(answer => {
                         return answer.content;
                     }),
-                    image: 'https://questions.barmania.eu/image/' + result[0].id
+                    image: 'https://questions.barmania.eu/image/' + questionObject[0].id
                 });
 
                 // Get and process question answer from client.
@@ -224,14 +215,13 @@ class Controller extends EventEmitter {
                         this.players.current().subPosition(difficultyToStep(difficulty));
                     }
 
-                    // Send player the correct answer id for this very question.
+                    // Send the player the correct answer id for this very question.
                     this.players.current().getSocket.emit('correct-answer', answerId);
                     resolve();
                 });
             }).catch((e) => {
                 console.log(e);
             });
-
         });
 
         // No answer is a wrong answer.
@@ -259,6 +249,18 @@ class Controller extends EventEmitter {
     // Returns the id (GUID) of this controller.
     getId() {
         return this._id;
+    }
+
+    // Gets the player selected difficulty value and returns the difficulty value for the map.
+    static mapDifficultyToStep(difficulty) {
+        switch (difficulty) {
+            case 1:
+                return 1;
+            case 2:
+                return 3;
+            case 3:
+                return 5;
+        }
     }
 }
 

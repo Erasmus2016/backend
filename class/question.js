@@ -11,21 +11,21 @@ class Question {
         this.usedQuestionIds = [0];
     };
 
-    // Gets the question with the appropriate answers from database and returns it.
+    // Gets the question with the appropriate answers from the database and returns it.
     // Receives the category name, the difficulty name and the language name.
     // Returns an array with 3 elements:
-    // 0. The question object - (will contain the correct answer).
+    // 0. The question object - (will contain the correct answer id).
     // 1. The translated question as a string.
-    // 2. The translated answers as a string array.
+    // 2. The translated answers with the id as a array.
     getQuestionWithAnswers(category, difficulty, language) {
 
-        return this.determineQuestion(category, difficulty).then((questionItem) => {
+        return this.determineQuestion(category, difficulty).then((question) => {
 
-            return this.getTranslatedQuestion(questionItem.id, language).then((translatedQuestion) => {
+            return this.getTranslatedQuestion(question.id, language).then((translatedQuestion) => {
 
-                return this.getTranslatedAnswers(questionItem.id, language).then((translatedAnswers) => {
+                return this.getTranslatedAnswers(question.id, language).then((translatedAnswers) => {
 
-                    return Promise.resolve([questionItem, translatedQuestion, translatedAnswers]);
+                    return Promise.resolve([question, translatedQuestion, translatedAnswers]);
                 });
             });
         }).catch(function (ex) {
