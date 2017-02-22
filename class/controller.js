@@ -172,7 +172,6 @@ class Controller extends EventEmitter {
 
     // Handles the question logic.
     handleQuestion(resolve) {
-        console.log('handle-question');
         let difficulty = 3;
 
         //TODO: Check: Get difficulty from frontend.
@@ -225,6 +224,7 @@ class Controller extends EventEmitter {
         // No answer is a wrong answer.
         setTimeout(() => {
             this.players.current().getSocket().removeAllListeners('set-difficulty');
+            this.players.current().getSocket().removeAllListeners('answer');
             this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
             resolve();
         }, 20000);  // 20 seconds.

@@ -10,7 +10,29 @@ new Database((db) => {
     allowCors();
 
     let clients = [];
+    let rooms = {};
     const instances = {};
+
+    const createInstance = (players) => {
+        // Create new controller instance and add 2 clients
+        const controller = new Controller(io, guid(), db);
+        controller.addPlayer(...players);
+        instances[controller.getId()] = controller;
+
+        controller.on('disconnect', () => {
+            //Todo: Listen for new connection after client disconnects.
+            if (controller.players.size() == 0) {
+                delete instances[controller.getId()];
+                log('room ' + controller.room_name + ' closed', 'red');
+            }
+            // Disconnect players and delete instance. Todo: Play again -> push back to client queue.
+        }).on('done', () => {
+            controller.players.each((player) => {
+                player.getSocket().disconnect();
+            });
+            delete instances[controller.getId()];
+        });
+    };
 
     // Client connects
     io.on('connection', (socket) => {
@@ -22,28 +44,23 @@ new Database((db) => {
             });
         });
 
-        // Add socket to client queue
-        clients.push(socket);
-        if (clients.length > 1) {
-            // Create new controller instance and add 2 clients
-            const controller = new Controller(io, guid(), db);
-            controller.addPlayer(clients.shift(), clients.shift());
-            instances[controller.getId()] = controller;
-
-            controller.on('disconnect', () => {
-                //Todo: Listen for new connection after client disconnects.
-                if (controller.players.size() == 0) {
-                    delete instances[controller.getId()];
-                    log('room ' + controller.room_name + ' closed', 'red');
+        socket.emit('mode');
+        socket.on('mode', (data) => {
+            if (data.type == 'friend') {
+                if (!rooms.hasOwnProperty(data.room)) {
+                    rooms[data.room] = socket;
+                } else {
+                    createInstance([rooms[data.room], socket]);
+                    delete rooms[data.room];
                 }
-                // Disconnect players and delete instance. Todo: Play again -> push back to client queue.
-            }).on('done', () => {
-                controller.players.each((player) => {
-                    player.getSocket().disconnect();
-                });
-                delete instances[controller.getId()];
-            });
-        }
+            } else {
+                // Add socket to client queue
+                clients.push(socket);
+                if (clients.length > 1) {
+                    createInstance([clients.shift(), clients.shift()]);
+                }
+            }
+        });
     });
 
     server.listen(5000);

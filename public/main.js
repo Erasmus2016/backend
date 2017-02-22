@@ -23,6 +23,9 @@ socket.on('set-difficulty', () => {
     socket.emit('set-difficulty', 3);
 });
 
-socket.on('question', data => {
-    console.log(data);
+socket.on('mode', () => {
+    socket.emit('mode', {
+        type: 'friend',
+        room: 'fisch',
+    })
 });
