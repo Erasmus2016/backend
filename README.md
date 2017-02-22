@@ -239,4 +239,6 @@ TODO: Add credits
 
 ## License
 
-European Union Public Licence (EUPL)
+This project is licensed under the European Union Public Licence (EUPL).
+
+Please check the `LICENCE.txt` for more information.
