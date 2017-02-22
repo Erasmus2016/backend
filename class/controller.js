@@ -172,10 +172,12 @@ class Controller extends EventEmitter {
 
     // Handles the question logic.
     handleQuestion(resolve) {
+        console.log('handle-question');
         let difficulty = 3;
 
         //TODO: Check: Get difficulty from frontend.
         // Get player difficulty value for a question.
+        this.players.current().getSocket().emit('set-difficulty');
         this.players.current().getSocket().once('set-difficulty', (data) => {
 
             if (data.isNumber && (data == 1 || data == 3 || data == 5)) {
