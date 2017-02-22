@@ -18,3 +18,11 @@ socket.on('login', () => {
 socket.on('roll-the-dice', () => {
     socket.emit('roll-the-dice');
 });
+
+socket.on('set-difficulty', () => {
+    socket.emit('set-difficulty', 3);
+});
+
+socket.on('question', data => {
+    console.log(data);
+});

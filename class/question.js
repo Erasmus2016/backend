@@ -67,7 +67,7 @@ class Question {
 
     // Determines and sets a random question object based on the selected category and difficulty level.
     determineQuestion(category, difficulty) {
-        const difficultyInt = Question.getDifficultyId(difficulty);
+        const difficultyInt = difficulty;
 
         let joinedUsedQuestionIds = '(' + this.usedQuestionIds.join() + ')';
 
@@ -106,7 +106,7 @@ class Question {
     // Returns the translated answers for this question as an array.
     getTranslatedAnswers(questionItemId, language) {
         // Query database and get the translated answers.
-        const sql = 'SELECT content FROM translation ' +
+        const sql = 'SELECT content, parent as id FROM translation ' +
             'INNER JOIN answer ON translation.parent = answer.id ' +
             'WHERE translation.type = "answer" ' +
             'AND answer.question_id = ? ' +
@@ -120,20 +120,6 @@ class Question {
             return shuffle.shuffleAnswers(result);
         });
     }
-
-    // Returns the question difficulty as an integer.
-    static getDifficultyId(difficulty) {
-        switch (difficulty) {
-            case "easy":
-                return 1;
-            case "medium":
-                return 2;
-            case "hard":
-                return 3;
-            default:
-                throw 'Unable to get difficultyId.';
-        }
-    };
 
     // Returns the language id as an integer.
     static getLanguageId(language) {

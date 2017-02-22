@@ -175,12 +175,22 @@ class Controller extends EventEmitter {
         console.log('handle-question');
         let difficulty = 3;
 
+        const difficultyToStep = difficulty => {
+            switch (difficulty) {
+                case 1:
+                    return 1;
+                case 2:
+                    return 3;
+                case 3:
+                    return 5;
+            }
+        };
+
         //TODO: Check: Get difficulty from frontend.
         // Get player difficulty value for a question.
         this.players.current().getSocket().emit('set-difficulty');
         this.players.current().getSocket().once('set-difficulty', (data) => {
-
-            if (data.isNumber && (data == 1 || data == 3 || data == 5)) {
+            if (!isNaN(data) && (data == 1 || data == 2 || data == 3)) {
                 difficulty = data;
             }
             else {
@@ -188,48 +198,57 @@ class Controller extends EventEmitter {
             }
 
             // Get a question with its appropriate answers from the database.
-            let questionObject = this.getQuestion(difficulty);
-            let correctAnswerId = questionObject[0].answer;
+            this.getQuestion(difficulty).then((result) => {
+                const questionObject = result;
+                let correctAnswerId = questionObject[0].answer;
 
-            // Send translated question and answers to the client. Also send the image for this question.
-            this.players.current().emit('question', {
-                question: questionObject[1],
-                answers: questionObject[2],
-                questionImage: questionObject[0].image
+                const map = questionObject[2].map(answer => {
+                    return answer.id;
+                });
+
+                // Send translated question and answers to the client. Also send the image for this question.
+                this.players.current().getSocket().emit('question', {
+                    question: questionObject[1],
+                    answers: questionObject[2].map(answer => {
+                        return answer.content;
+                    }),
+                    image: 'https://questions.barmania.eu/image/' + result[0].id
+                });
+
+                // Get and process question answer from client.
+                this.players.current().getSocket().once('answer', (answerId) => {
+                    // Check for correct answer and move player appropriate.
+                    if (answerId.isNumber && map[answerId] === correctAnswerId) {
+                        this.players.current().addPosition(difficultyToStep(difficulty));
+                    } else {
+                        this.players.current().subPosition(difficultyToStep(difficulty));
+                    }
+
+                    // Send player the correct answer id for this very question.
+                    //this.broadcast('correct-answer', answerId);
+                    resolve();
+                });
+            }).catch((e) => {
+                console.log(e);
             });
 
-            // Get and process question answer from client.
-            this.players.current().getSocket().once('answer', (answerId) => {
-                // Check for correct answer and move player appropriate.
-                if (answerId.isNumber && answerId === correctAnswerId) {
-                    this.players.current().addPosition(difficulty);
-                } else {
-                    this.players.current().subPosition(difficulty);
-                }
-
-                // Send player the correct answer id for this very question.
-                this.broadcast('correct-answer', correctAnswerId);
-                resolve();
-            });
         });
 
         // No answer is a wrong answer.
         setTimeout(() => {
             this.players.current().getSocket().removeAllListeners('set-difficulty');
-            this.players.current().subPosition(difficulty);
+            this.players.current().subPosition(difficultyToStep(difficulty));
             resolve();
         }, 20000);  // 20 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
     getQuestion(difficulty) {
-        const gameCategory = this.game.getCategory().toLowerCase();
+        const gameCategory = /*this.game.getCategory().toLowerCase()*/'history';
         const userLanguage = this.players.current().lang;
 
         // TODO: Testing this call.
-        return this._question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage).then((result) => {
-            return result;
-        });
+        return this._question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage);
     }
 
     // Sends the input data with the appropriate event name to all connected clients within this room.
