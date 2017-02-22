@@ -12,7 +12,7 @@ class Question {
     };
 
     // Gets the question with the appropriate answers from the database and returns it.
-    // Receives the category name, the difficulty name and the language name.
+    // Receives the category name, the difficulty value and the language short code.
     // Returns an array with 3 elements:
     // 0. The question object - (will contain the correct answer id).
     // 1. The translated question as a string.
@@ -34,7 +34,7 @@ class Question {
         });
     };
 
-    // Determines and sets a random question object based on the selected category and difficulty level.
+    // Determines and returns a random question object based on the selected category and difficulty level.
     determineQuestion(category, difficulty) {
 
         let joinedUsedQuestionIds = '(' + this.usedQuestionIds.join() + ')';
@@ -42,11 +42,11 @@ class Question {
         // Query database and get one random not already used question.
         const sql = 'SELECT * FROM question ' +
             'WHERE id NOT IN ' + joinedUsedQuestionIds + ' ' +
-            'AND difficulty = ? ' +
             'AND category = ? ' +
+            'AND difficulty = ? ' +
             'ORDER BY RAND() LIMIT 1';
 
-        return this.db.query(sql, [difficulty, category]).then((result) => {
+        return this.db.query(sql, [category, difficulty]).then((result) => {
 
             if (result.length === 1 && typeof(result[0].id !== undefined)) {
                 this.saveQuestionIdToRam(result[0].id);
