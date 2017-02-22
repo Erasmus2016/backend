@@ -111,6 +111,7 @@ There are multiple actions available:
 * _correct-answer_ - Sends the correct answer id to a player after he answered the question.
 * _player-position_ - After a movement the new position for the current player will be broadcasted to all players.
 * _game-over_ - In case of the end of the game, this action will be invoked. The backend is sending the id of the winning player to all players of this game.
+* _set-difficulty_ - Notifying the player to choose a difficulty.
 
 ### Actions from the frontend to the backend
 
