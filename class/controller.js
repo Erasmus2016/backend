@@ -118,9 +118,12 @@ class Controller extends EventEmitter {
             this.players.current().setPosition(0);
         }
 
+        // Send the new positions to all players before dealing with the new field type.
+        this.broadcastPlayerPositions();
+
         let step = this.game.getField()[pos];
 
-        // Check the new position of the player and deals with special fields.
+        // Check the new position of the player and deal with special fields.
         const promise = new Promise((resolve, reject) => {
             switch (step.type) {
                 case 'default':
