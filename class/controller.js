@@ -216,7 +216,7 @@ class Controller extends EventEmitter {
                     }
 
                     // Send the player the correct answer id for this very question.
-                    this.players.current().getSocket.emit('correct-answer', answerId);
+                    this.players.current().getSocket().emit('correct-answer', answerId);
                     resolve();
                 });
             }).catch((e) => {
@@ -226,9 +226,14 @@ class Controller extends EventEmitter {
 
         // No answer is a wrong answer.
         setTimeout(() => {
-            this.players.current().getSocket().removeAllListeners('set-difficulty');
-            this.players.current().getSocket().removeAllListeners('answer');
-            this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
+            try {
+                this.players.current().getSocket().removeAllListeners('set-difficulty');
+                this.players.current().getSocket().removeAllListeners('answer');
+                this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
+            } catch (e) {
+
+            }
+
             resolve();
         }, 20000);  // 20 seconds.
     }
