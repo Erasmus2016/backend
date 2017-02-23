@@ -40,11 +40,11 @@ class Question {
         let joinedUsedQuestionIds = '(' + this.usedQuestionIds.join() + ')';
 
         // Query database and get one random not already used question.
-        const sql = 'SELECT * FROM question ' +
-            'WHERE id NOT IN ' + joinedUsedQuestionIds + ' ' +
-            'AND category = ? ' +
-            'AND difficulty = ? ' +
-            'ORDER BY RAND() LIMIT 1';
+        const sql = 'SELECT * FROM question' +
+            ' WHERE id NOT IN ' + joinedUsedQuestionIds +
+            ' AND category = ?' +
+            ' AND difficulty = ?' +
+            ' ORDER BY RAND() LIMIT 1';
 
         return this.db.query(sql, [category, difficulty]).then((result) => {
 
@@ -53,7 +53,8 @@ class Question {
                 return result[0];
             }
             else {
-                this.usedQuestionIds = [0];
+                this.resetQuestionIdArray();
+                // Recursion.
                 return this.determineQuestion(category, difficulty);
             }
         });
@@ -64,13 +65,18 @@ class Question {
         this.usedQuestionIds.push(questionId);
     };
 
+    // Resets the question id array to initial value (one element: 0).
+    resetQuestionIdArray() {
+        this.usedQuestionIds = [0];
+    }
+
     // Returns the translated question for this very question.
     getTranslatedQuestion(questionItemId, language) {
         // Query database and get the translated question.
-        const sql = 'SELECT content FROM translation ' +
-            'WHERE type = "question" ' +
-            'AND parent = ? ' +
-            'AND lang = ?';
+        const sql = 'SELECT content FROM translation' +
+            ' WHERE type = "question"' +
+            ' AND parent = ?' +
+            ' AND lang = ?';
 
         return this.db.query(sql, [questionItemId, language]).then((result) => {
             return result[0].content;
@@ -80,14 +86,14 @@ class Question {
     // Returns the translated answers for this very question as an array.
     getTranslatedAnswers(questionItemId, language) {
         // Query database and get the translated answers.
-        const sql = 'SELECT content, parent AS id FROM translation ' +
-            'INNER JOIN answer ON translation.parent = answer.id ' +
-            'WHERE translation.type = "answer" ' +
-            'AND answer.question_id = ? ' +
-            'AND translation.lang = ?' +
+        const sql = 'SELECT content, parent AS id FROM translation' +
+            ' INNER JOIN answer ON translation.parent = answer.id' +
+            ' WHERE translation.type = "answer"' +
+            ' AND answer.question_id = ?' +
+            ' AND translation.lang = ?' +
 
             // Discard empty content values.
-            'AND content <> "" ';
+            ' AND content <> ""';
 
         return this.db.query(sql, [questionItemId, language]).then((result) => {
             // Shuffle the answers to avoid repetition.
