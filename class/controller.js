@@ -9,7 +9,6 @@ const EventEmitter = require('events'),
     {log} = require('../functions'),
     PlayerList = require('./playerList');
 
-
 class Controller extends EventEmitter {
     constructor(io, id, db) {
 
@@ -47,7 +46,7 @@ class Controller extends EventEmitter {
                 player.setName(data.name);
 
                 // Only the first player can set the category. All following players can't change the category.
-                // TODO: Send all following players the category and notify them there are unable to change the category.
+                // TODO: Send all following players the category and notify them that there are unable to change the category.
                 // TODO: Alternate check for the same category before adding a new player to a room. Only move players with the same category to the same room.
                 this.game.setCategory(data.category);
 
@@ -134,7 +133,7 @@ class Controller extends EventEmitter {
                     resolve();
                     break;
                 default:
-                    reject('unknown field type');
+                    reject('Unknown field type.');
             }
         });
 
@@ -147,7 +146,7 @@ class Controller extends EventEmitter {
             this.gameRound();
         }).catch((e) => {
             console.log(e);
-            throw 'unknown error';
+            throw 'Unknown error!';
         });
     }
 
@@ -235,7 +234,6 @@ class Controller extends EventEmitter {
         const gameCategory = /*this.game.getCategory().toLowerCase()*/'history';
         const userLanguage = this.players.current().lang;
 
-        // TODO: Testing this call.
         return this._question.getQuestionWithAnswers(gameCategory, difficulty, userLanguage);
     }
 
