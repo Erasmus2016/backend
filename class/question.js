@@ -58,7 +58,7 @@ class Question {
                 return this.determineQuestion(category, difficulty);
             }
         });
-    }
+    };
 
     // Adds a question id to the already used question ids array.
     saveQuestionIdToRam(questionId) {
@@ -68,7 +68,7 @@ class Question {
     // Resets the question id array to initial value (one element: 0).
     resetQuestionIdArray() {
         this.usedQuestionIds = [0];
-    }
+    };
 
     // Returns the translated question for this very question.
     getTranslatedQuestion(questionItemId, language) {
@@ -81,7 +81,7 @@ class Question {
         return this.db.query(sql, [questionItemId, language]).then((result) => {
             return result[0].content;
         });
-    }
+    };
 
     // Returns the translated answers for this very question as an array.
     getTranslatedAnswers(questionItemId, language) {
@@ -99,7 +99,7 @@ class Question {
             // Shuffle the answers to avoid repetition.
             return shuffle.shuffleAnswers(result);
         });
-    }
+    };
 }
 
 module.exports = Question;
