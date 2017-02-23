@@ -109,7 +109,7 @@ There are multiple actions available:
 * _dice-result_ - When the player triggered the frontend _roll-the-dice_ action, the backend is getting a random dice result und returns this result to the specific player.
 * _question_ - If a player requested a question the backend is sending an array with three elements: First the question object, next an answer array with the 4 answers for this question, and last the image (if any or null).
 * _correct-answer_ - Sends the correct answer id to a player after he answered the question.
-* _player-position_ - After a movement the new position for the current player will be broadcasted to all players.
+* _player-position_ - After a movement of a player the position and the color for all players will be broadcasted to all players. This will contain the new position for a moved player.
 * _game-over_ - In case of the end of the game, this action will be invoked. The backend is sending the id of the winning player to all players of this game.
 * _set-difficulty_ - Notifying the player to choose a difficulty.
 
