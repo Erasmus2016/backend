@@ -64,7 +64,9 @@ function drawFieldToString(field) {//TODO: create utils.js and move methods like
 }
 
 function generateField(maxX, maxY, approximateLength) {//TODO: split to more methods
-    let startX = 0, startY = randomNumber.getRandomInteger(0, maxY);
+    let startX = 0;
+    //let startY = randomNumber.getRandomInteger(0, maxY);
+    let startY = Math.round(maxY / 2);
     let requiredSizeAddition = approximateLength - maxX;
     if (requiredSizeAddition <= 0) {
         // generate line map (too short length required)
@@ -326,7 +328,7 @@ module.exports = {
 
     // This functions will generate the playing field and return it.
     generateNewField: function () {//TODO: maybe add some arguments to this method
-        let field = generateField(50, 50, 70);//TODO: better arguments
+        let field = generateField(30, 20, 70);//TODO: better arguments
         addJumpsToField(field, 0.4, 4);//TODO: better arguments
         addQuestionsToField(field, [2, 4, 6, 7]);//TODO: better arguments
         return field;
