@@ -111,6 +111,7 @@ class Controller extends EventEmitter {
         // Check if the player has finished the game.
         if (this.game.getField().length < pos) {
             // Send the new positions to all players before dealing with the game over handling.
+            this.players.current().setPosition(this.game.getField().length - 1);
             this.broadcastPlayerPositions();
             this.gameOver();
             return;
@@ -237,7 +238,7 @@ class Controller extends EventEmitter {
             }
 
             resolve();
-        }, 100);  // 20 seconds.
+        }, 20000);  // 20 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
