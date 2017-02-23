@@ -53,7 +53,8 @@ class Question {
                 return result[0];
             }
             else {
-                throw "No appropriate questions left.";
+                this.usedQuestionIds = [0];
+                return this.determineQuestion(category, difficulty);
             }
         });
     }
