@@ -110,6 +110,8 @@ class Controller extends EventEmitter {
         let pos = this.players.current().addPosition(dice);
         // Check if the player has finished the game.
         if (this.game.getField().length < pos) {
+            // Send the new positions to all players before dealing with the game over handling.
+            this.broadcastPlayerPositions();
             this.gameOver();
             return;
             // Check if the player is behind the start field.
@@ -235,7 +237,7 @@ class Controller extends EventEmitter {
             }
 
             resolve();
-        }, 20000);  // 20 seconds.
+        }, 100);  // 20 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
