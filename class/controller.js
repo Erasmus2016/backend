@@ -219,7 +219,7 @@ class Controller extends EventEmitter {
                     }
 
                     // Send the player the correct answer id for this very question.
-                    this.players.current().getSocket().emit('correct-answer', answerId);
+                    this.players.current().getSocket().emit('correct-answer', correctAnswerId);
                     resolve();
                 });
             }).catch((e) => {
@@ -232,6 +232,7 @@ class Controller extends EventEmitter {
             try {
                 this.players.current().getSocket().removeAllListeners('set-difficulty');
                 this.players.current().getSocket().removeAllListeners('answer');
+                this.players.current().getSocket().emit('correct-answer', correctAnswerId);
                 this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
             } catch (e) {
 
