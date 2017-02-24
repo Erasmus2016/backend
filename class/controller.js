@@ -117,7 +117,7 @@ class Controller extends EventEmitter {
             // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
-            this.players.current().setPosition(0);
+            this.players.current().setPosition(1);
         }
 
         // Send the new positions to all players before dealing with the new field type.
@@ -218,7 +218,7 @@ class Controller extends EventEmitter {
                         this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
                     }
 
-                    for (i in map) {
+                    for (let i in map) {
                         if (map.hasOwnProperty(i)) {
                             if (map[i] == correctAnswerId) {
                                 // Send the player the correct answer id for this very question.
