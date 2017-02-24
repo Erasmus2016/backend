@@ -214,8 +214,6 @@ class Controller extends EventEmitter {
 
                     // Check for correct answer and move player appropriate.
                     if (!isNaN(answerId) && map[answerId] === correctAnswerId) {
-                        console.log('difficulty: ' + difficulty);
-                        console.log(Controller.mapDifficultyToStep(difficulty));
                         this.players.current().addPosition(Controller.mapDifficultyToStep(difficulty));
                     } else {
                         this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
