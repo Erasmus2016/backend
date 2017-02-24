@@ -239,7 +239,7 @@ class Controller extends EventEmitter {
             }
 
             resolve();
-        }, 60000);  // 20 seconds.
+        }, 20000);  // 20 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
