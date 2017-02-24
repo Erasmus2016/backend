@@ -218,8 +218,15 @@ class Controller extends EventEmitter {
                         this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
                     }
 
-                    // Send the player the correct answer id for this very question.
-                    this.players.current().getSocket().emit('correct-answer', correctAnswerId);
+                    for (i in map) {
+                        if (map.hasOwnProperty(i)) {
+                            if (map[i] == correctAnswerId) {
+                                // Send the player the correct answer id for this very question.
+                                this.players.current().getSocket().emit('correct-answer', i);
+                            }
+                        }
+                    }
+
                     resolve();
                 });
             }).catch((e) => {
@@ -239,7 +246,7 @@ class Controller extends EventEmitter {
             }
 
             resolve();
-        }, 20000);  // 20 seconds.
+        }, 60000);  // 60 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
