@@ -18,6 +18,7 @@ class Controller extends EventEmitter {
         this._id = id;
         this._io = io;
         this.game = new Game();
+        this.game.setCategory('history');
         this._question = new Question(db);
         this.players = new PlayerList();
         this.room_name = 'ROOM_' + this._id;
@@ -49,7 +50,6 @@ class Controller extends EventEmitter {
                 // TODO: Send all following players the category and notify them that there are unable to change the category.
                 // TODO: Alternate check for the same category before adding a new player to a room. Only move players with the same category to the same room.
                 //this.game.setCategory(data.category);
-                this.game.setCategory('history');
 
                 this.game.releaseOldColorIfAny(player.getColor());
 
@@ -240,7 +240,7 @@ class Controller extends EventEmitter {
             }
 
             resolve();
-        }, 20000);  // 20 seconds.
+        }, 1000);  // 20 seconds.
     }
 
     // Gets a random question with the appropriate answers from database.
