@@ -179,6 +179,7 @@ class Controller extends EventEmitter {
     // Handles the question logic.
     handleQuestion(resolve) {
         let difficulty = 3;
+        let correctAnswerId = 0;
 
         //TODO: Check: Get difficulty from frontend.
         // Get player difficulty value for a question.
@@ -193,7 +194,7 @@ class Controller extends EventEmitter {
 
             // Get a question with its appropriate answers from the database.
             this.getQuestion(difficulty).then((questionObject) => {
-                let correctAnswerId = questionObject[0].answer;
+                correctAnswerId = questionObject[0].answer;
 
                 const map = questionObject[2].map(answer => {
                     return answer.id;
