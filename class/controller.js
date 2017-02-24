@@ -211,8 +211,11 @@ class Controller extends EventEmitter {
 
                 // Get and process question answer from client.
                 this.players.current().getSocket().once('answer', (answerId) => {
+
                     // Check for correct answer and move player appropriate.
-                    if (answerId.isNumber && map[answerId] === correctAnswerId) {
+                    if (!isNaN(answerId) && map[answerId] === correctAnswerId) {
+                        console.log('difficulty: ' + difficulty);
+                        console.log(Controller.mapDifficultyToStep(difficulty));
                         this.players.current().addPosition(Controller.mapDifficultyToStep(difficulty));
                     } else {
                         this.players.current().subPosition(Controller.mapDifficultyToStep(difficulty));
