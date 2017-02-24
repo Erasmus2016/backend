@@ -17,8 +17,7 @@ class Controller extends EventEmitter {
 
         this._id = id;
         this._io = io;
-        this.game = new Game();
-        this.game.setCategory('history');
+        this.game = new Game('history');
         this._question = new Question(db);
         this.players = new PlayerList();
         this.room_name = 'ROOM_' + this._id;

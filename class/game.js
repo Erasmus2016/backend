@@ -2,10 +2,10 @@ const Field = require('../field/fieldGenerator');
 
 class Game {
 
-    constructor() {
+    constructor(category) {
         // Generate new playing field while creating this object.
         this.field = Field.generateNewField();
-        this.category = null;
+        this.category = category;
         this.availableColors = ['red', 'green', 'blue', 'yellow'];
     };
 
