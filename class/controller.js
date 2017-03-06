@@ -107,6 +107,7 @@ class Controller extends EventEmitter {
     // Moves the player to a new position on the playing field (map).
     process(dice) {
         let pos = this.players.current().addPosition(dice);
+
         // Check if the player has finished the game.
         if (this.game.getField().length < pos) {
             // Send the new positions to all players before dealing with the game over handling.
@@ -137,9 +138,9 @@ class Controller extends EventEmitter {
                 case 'jump':
                     // Wait 2 seconds before moving the player's position to the new field.
                     setTimeout(() => {
-                        this.setCurrentPlayerToSpecificPosition(step.jumpDestinationId), 2000
-                    });
-                    resolve();
+                        this.setCurrentPlayerToSpecificPosition(step.jumpDestinationId);
+                        resolve();
+                    }, 2000);
                     break;
                 default:
                     reject('Unknown field type.');
