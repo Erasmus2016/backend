@@ -110,14 +110,14 @@ class Controller extends EventEmitter {
         // Check if the player has finished the game.
         if (this.game.getField().length < pos) {
             // Send the new positions to all players before dealing with the game over handling.
-            this.players.current().setPosition(this.game.getField().length - 1);
+            this.setCurrentPlayerToSpecificPosition(this.game.getField().length - 1);
             this.broadcastPlayerPositions();
             this.gameOver();
             return;
             // Check if the player is behind the start field.
         } else if (pos < 0) {
             // Move to start.
-            this.players.current().setPosition(1);
+            this.setCurrentPlayerToSpecificPosition(1);
         }
 
         // Send the new positions to all players before dealing with the new field type.
@@ -135,7 +135,10 @@ class Controller extends EventEmitter {
                     this.handleQuestion(resolve);
                     break;
                 case 'jump':
-                    this.players.current().setPosition(step.jumpDestinationId);
+                    // Wait 2 seconds before moving the player's position to the new field.
+                    setTimeout(
+                        this.setCurrentPlayerToSpecificPosition(step.jumpDestinationId), 2000
+                    );
                     resolve();
                     break;
                 default:
@@ -154,6 +157,11 @@ class Controller extends EventEmitter {
             console.log(e);
             throw 'Unknown error!';
         });
+    }
+
+    // Moves the current player's position to the passed field id.
+    setCurrentPlayerToSpecificPosition(jumpDestinationId) {
+        this.players.current().setPosition(jumpDestinationId);
     }
 
     // Sends to all players the current position and selected color for all players.
