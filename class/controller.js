@@ -136,9 +136,9 @@ class Controller extends EventEmitter {
                     break;
                 case 'jump':
                     // Wait 2 seconds before moving the player's position to the new field.
-                    setTimeout(
+                    setTimeout(() => {
                         this.setCurrentPlayerToSpecificPosition(step.jumpDestinationId), 2000
-                    );
+                    });
                     resolve();
                     break;
                 default:
