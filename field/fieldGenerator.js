@@ -329,7 +329,7 @@ module.exports = {
     // This functions will generate the playing field and return it.
     generateNewField: function () {//TODO: maybe add some arguments to this method
         let field = generateField(30, 20, 70);//TODO: better arguments
-        addJumpsToField(field, 0.4, 4);//TODO: better arguments
+        addJumpsToField(field, 0.1, 4);//TODO: better arguments
         addQuestionsToField(field, [2, 4, 6, 7]);//TODO: better arguments
         return field;
     },
