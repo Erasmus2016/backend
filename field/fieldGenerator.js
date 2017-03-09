@@ -284,7 +284,7 @@ function addQuestionsToField(field, differences) {
         return randomNumber.getRandomInteger(0, differences.length);
     };
     let diff = 0, target = nextTarget();
-    for (let i = 0, len = field.length; i < len; i++) {
+    for (let i = 1, len = field.length - 1; i < len; i++) {
         diff++;
 
         let point = field[i];
